@@ -1,0 +1,709 @@
+.container {
+  margin: 0 auto;
+  background-color: var(--background-homepage);
+}
+
+.section1 {
+  background-image: url("../public/lading-background.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+
+  height: 100vh;
+
+  padding: 30px 80px;
+  display: flex;
+  flex-flow: column;
+  position: relative;
+}
+
+.contact {
+  background-color: var(--green-light);
+  color: white;
+
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 80px 15px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  border-top-left-radius: 100px;
+  border-bottom-left-radius: 100px;
+}
+
+.header {
+  flex: 0 1 auto;
+  display: flex;
+  justify-items: center;
+  color: white;
+
+  &__left {
+    font-family: "Dancing Script";
+    font-size: 50px;
+  }
+
+  &__input {
+    display: none;
+  }
+
+  &__bar {
+    display: none;
+  }
+
+  &__right {
+    display: flex;
+    align-items: baseline;
+    flex: 1;
+    justify-content: space-between;
+
+    &__funct {
+      display: flex;
+      align-items: center;
+      gap: 25px;
+      color: rgba(255, 255, 255, 0.5);
+      cursor: pointer;
+
+      &__item:hover {
+        color: white;
+      }
+
+      &__close {
+        display: none;
+      }
+    }
+
+    &__register {
+      background-color: transparent;
+      border: 2px var(--green-light) solid;
+      color: var(--green-light);
+
+      padding: 10px 50px;
+      border-radius: 30px;
+    }
+  }
+}
+
+.main {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-left: 100px;
+  gap: 7px;
+
+  &__decript {
+    color: #737476;
+    font-size: 12px;
+  }
+
+  &__welcome {
+    color: whitesmoke;
+    font-size: 40px;
+    font-weight: lighter;
+  }
+
+  &__myfood {
+    color: white;
+    font-size: 40px;
+    font-weight: bold;
+  }
+
+  &__discount {
+    color: var(--green-light);
+    display: flex;
+    justify-items: center;
+
+    &__number {
+      font-size: 40px;
+      font-weight: bold;
+      padding-right: 15px;
+    }
+
+    &__discript {
+      font-size: 10px;
+      margin: auto 0;
+      padding-left: 15px;
+      border-left: 1px solid var(--green-light);
+    }
+  }
+
+  &__button {
+    width: 150px;
+    padding: 10px 40px;
+    background-color: var(--green-light);
+    color: white;
+    border: none;
+    border-radius: 30px;
+  }
+}
+
+.section2 {
+  background-color: var(--background-homepage);
+}
+
+.slideCatagory {
+  width: 960px;
+  margin: 0 auto;
+  overflow: hidden;
+  transform: translateY(-50%);
+}
+
+.innerSlideCatagory {
+  display: inline-flex;
+  gap: 30px;
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    position: relative;
+    border-radius: 30px;
+    background-color: var(--color-card);
+    width: 300px;
+    height: 150px;
+    cursor: grab;
+
+    &__img {
+      width: 90px;
+      height: 75px;
+      background-size: contain;
+      pointer-events: none;
+    }
+
+    &__content {
+      margin: auto 0;
+
+      &__name {
+        margin-bottom: 7px;
+        color: white;
+        font-weight: bold;
+      }
+
+      &__descript {
+        color: var(--color-descript);
+        font-size: 12px;
+      }
+    }
+
+    &__button {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      width: 30px;
+      height: 30px;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 50%;
+      border: none;
+
+      background-color: var(--green-light);
+      color: white;
+      cursor: pointer;
+    }
+  }
+}
+
+.select__box {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  &::after {
+    position: absolute;
+    content: "\276F";
+    right: 0px;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--green-light);
+    cursor: pointer;
+    pointer-events: none;
+    transition: transform 0.3s ease;
+  }
+
+  &:focus-within:after {
+    transform: rotate(90deg);
+  }
+}
+
+.listItems {
+  margin: 0 20%;
+  padding-bottom: 30px;
+  height: 80vh;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    color: white;
+
+    &__name {
+      font-size: 20px;
+    }
+
+    &__option {
+      display: flex;
+      align-items: center;
+      font-size: 15px;
+      padding: 5px 40px 5px 20px;
+      background-color: #153821;
+      color: white;
+      border: var(--green-light) 1px solid;
+      border-radius: 20px;
+      appearance: none;
+      outline: none;
+    }
+  }
+
+  &__content {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 80px;
+    gap: 70px 30px;
+    padding-top: 40px;
+    overflow-y: scroll;
+    height: 560px;
+
+    &::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: rgb(143, 143, 143);
+      border-radius: 10px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: rgb(255, 66, 66);
+      border-radius: 10px;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      background: rgb(255, 77, 77);
+    }
+
+    &__item {
+      display: flex;
+      height: fit-content;
+      flex-direction: column;
+      width: 200px;
+      gap: 5px;
+      background-color: var(--color-card);
+      border-radius: 30px;
+      padding: 80px 20px 20px 20px;
+      position: relative;
+
+      &__trend {
+        position: absolute;
+        top: -40px;
+        left: 10px;
+        border-radius: 50%;
+        background-color: var(--color-card);
+        width: 30px;
+        height: 30px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        &__img {
+          width: 12px;
+          height: 12px;
+        }
+      }
+
+      &__img {
+        height: 110px;
+        max-width: 150px;
+        margin: 0 auto;
+        position: absolute;
+        left: 50%;
+        transform: translate(-50%, -110%);
+      }
+
+      &__name {
+        color: white;
+      }
+
+      &__descript {
+        font-size: 12px;
+        color: var(--color-descript);
+      }
+
+      &__info {
+        display: flex;
+        gap: 10px;
+        justify-content: space-between;
+
+        &__food {
+          display: flex;
+          flex: 1;
+          justify-content: space-between;
+          align-items: center;
+
+          &__price {
+            color: white;
+            font-size: 25px;
+            font-weight: bold;
+          }
+
+          &__weight {
+            background-color: #15141a;
+            color: #414046;
+            font-size: 12px;
+            padding: 2px 12px;
+            border-radius: 20px;
+          }
+        }
+
+        &__button {
+          width: 40px;
+          height: 40px;
+          color: white;
+          background-color: var(--green-light);
+
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          border-radius: 50%;
+          border: none;
+        }
+      }
+    }
+  }
+}
+
+.advertise {
+  margin: 100px auto;
+
+  &__image {
+    width: 100%;
+    background-size: contain;
+  }
+}
+
+.ourApp {
+  margin: 50px 15%;
+  display: flex;
+  gap: 30px;
+  align-items: center;
+
+  &__image {
+    width: 50vw;
+    background-size: contain;
+  }
+
+  &__content {
+    &__name {
+      font-size: 50px;
+      color: white;
+      font-weight: bold;
+    }
+
+    &__descript {
+      background-color: var(--color-card);
+      color: #7b7a81;
+      font-size: 12px;
+      padding: 10px 20px;
+      margin: 30px 0;
+      border-top-right-radius: 50px;
+      border-bottom-right-radius: 50px;
+      border-left: 2px solid var(--green-light);
+    }
+
+    &__button {
+      background-color: var(--green-light);
+      color: white;
+      border: none;
+      padding: 10px 40px;
+      border-radius: 30px;
+    }
+  }
+}
+
+.register {
+  background-image: url("../public/resgister-background.jpg");
+  height: 200px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  border-top-left-radius: 40px;
+  border-top-right-radius: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+
+  &__title {
+    color: white;
+    &__sub {
+      font-size: 30px;
+      text-decoration: underline var(--green-light);
+    }
+
+    &__news {
+      font-size: 35px;
+      font-weight: bold;
+    }
+  }
+
+  &__form {
+    display: flex;
+    align-items: center;
+    position: relative;
+
+    &__input {
+      width: 400px;
+      padding: 10px 20px;
+      border-top-left-radius: 30px;
+      border-bottom-left-radius: 30px;
+      border: none;
+      outline: none;
+      color: rgb(77, 77, 77);
+      background-color: rgba(167, 167, 167, 0.3);
+
+      &::placeholder {
+        color: rgb(197, 197, 197);
+      }
+    }
+
+    &__button {
+      padding: 10px 40px;
+      border-radius: 30px;
+      border: none;
+      position: absolute;
+      right: -40px;
+      background-color: var(--green-light);
+    }
+  }
+}
+
+.footer {
+  display: flex;
+  color: white;
+  justify-content: space-around;
+  align-items: center;
+  padding: 30px 0;
+
+  &__brand {
+    font-family: "Dancing Script";
+    font-size: 50px;
+  }
+
+  &__option {
+    display: flex;
+    gap: 40px;
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+
+    &__item:hover {
+      color: white;
+    }
+  }
+
+  &__contact {
+    display: flex;
+    gap: 20px;
+  }
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+  .header {
+    &__left {
+      font-size: 40px;
+    }
+
+    &__right {
+      &__funct {
+        font-size: 12px;
+
+        &__item:hover {
+          color: white;
+        }
+      }
+
+      &__register {
+        font-size: 12px;
+        padding: 7px 30px;
+      }
+    }
+  }
+
+  .main {
+    margin-left: 50px;
+  }
+
+  .slideCatagory {
+    width: 630px;
+  }
+
+  .listItems {
+    margin: 0 10%;
+  }
+
+  .advertise {
+    margin: 100px auto;
+  }
+
+  .ourApp {
+    margin: 20px 10%;
+
+    &__image {
+      width: 40vw;
+    }
+
+    &__content {
+      &__name {
+        font-size: 40px;
+      }
+
+      &__descript {
+        font-size: 10px;
+        margin: 20px 0;
+      }
+    }
+  }
+
+  .footer {
+    &__brand {
+      font-size: 30px;
+    }
+
+    &__option {
+      gap: 25px;
+      font-size: 12px;
+    }
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .header {
+    justify-content: space-between;
+    align-items: center;
+
+    &__input:checked ~ &__right {
+      display: flex;
+    }
+
+    &__bar {
+      font-size: 30px;
+      cursor: pointer;
+      display: block;
+    }
+
+    &__right {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background-color: rgba(100, 100, 100, 0.5);
+      backdrop-filter: blur(20px);
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      top: 0;
+      right: 0;
+      z-index: 1000;
+
+      &__funct {
+        font-size: 25px;
+        flex-direction: column;
+        padding: 0;
+
+        &__close {
+          display: block;
+          cursor: pointer;
+          position: absolute;
+          right: 20px;
+          top: 20px;
+        }
+      }
+    }
+  }
+
+  .main {
+    margin-left: 10px;
+  }
+
+  .slideCatagory {
+    width: 100%;
+  }
+
+  .listItems {
+    margin: 0 5px;
+  }
+
+  .advertise {
+    margin: 100px auto;
+  }
+
+  .ourApp {
+    margin: 20px 10%;
+
+    &__image {
+      width: 40vw;
+    }
+
+    &__content {
+      &__name {
+        font-size: 30px;
+      }
+
+      &__descript {
+        font-size: 10px;
+        margin: 20px 0;
+      }
+    }
+  }
+
+  .register {
+    height: 150px;
+    &__title {
+      &__sub {
+        font-size: 20px;
+      }
+
+      &__news {
+        font-size: 25px;
+      }
+    }
+
+    &__form {
+      &__input {
+        width: 200px;
+        font-size: 10px;
+      }
+
+      &__button {
+        font-size: 10px;
+        padding: 10px 20px;
+      }
+    }
+  }
+
+  .footer {
+    &__brand {
+      font-size: 30px;
+    }
+
+    &__option {
+      gap: 15px;
+      font-size: 10px;
+    }
+
+    &__contact {
+      font-size: 12px;
+      display: flex;
+      gap: 10px;
+    }
+  }
+}
