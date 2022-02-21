@@ -1,4 +1,4 @@
-import type { NextPage } from 'next'
+import type { GetServerSideProps, NextPage } from 'next'
 import Head from 'next/head'
 import styles from '../styles/Home.module.scss'
 import { FaTwitter, FaFacebookF, FaInstagram, FaChevronRight, FaAlignRight } from "react-icons/fa"
@@ -8,29 +8,12 @@ import { Categories, Food } from '../models'
 import { motion } from 'framer-motion'
 import { BsPlusLg, BsXLg } from 'react-icons/bs'
 
-const Home: NextPage = () => {
-  const [categories, setCategories] = useState<Array<Categories>>([])
+const Home = ({ foods, categories }: { foods: Array<Food>, categories: Array<Categories> }) => {
   const [widthSlide, setWidthSlide] = useState<number>(0)
   const [showCategory, setShowCategory] = useState<number>(0)
-  const [foods, setFoods] = useState<Array<Food>>([])
   const [listFoods, setListFoods] = useState<Array<Food>>([])
   const slide = useRef<null | HTMLDivElement>(null)
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const resCategories = await foodApi.getCategories()
-        setCategories(resCategories)
-
-        const resFood = await foodApi.getFood()
-        setFoods(resFood)
-        setListFoods(resFood)
-      } catch (error) {
-        console.log("fail: ", error)
-      }
-    }
-    fetchData()
-  }, [])
   useEffect(() => {
     const changeListFood = () => {
       if (showCategory !== 0) {
@@ -41,7 +24,6 @@ const Home: NextPage = () => {
     }
     changeListFood()
   }, [showCategory])
-  console.log(foods.filter(food => food.category === showCategory))
   useEffect(() => {
     if (slide.current?.scrollWidth != undefined && slide.current?.offsetWidth != undefined) {
       setWidthSlide(slide.current?.scrollWidth - slide.current?.offsetWidth)
@@ -136,7 +118,7 @@ const Home: NextPage = () => {
             </div>
           </div>
           <motion.div layout className={styles.listItems__content}>
-            {listFoods.map(food => {
+            {listFoods?.map(food => {
               return (
                 <motion.div layout className={styles.listItems__content__item} key={food.id}>
                   {food.trend === 'best-seller' &&
@@ -201,6 +183,17 @@ const Home: NextPage = () => {
       </section>
     </div>
   )
+}
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const resFood = await foodApi.getFood()
+  const resCategories = await foodApi.getCategories()
+  return {
+    props: {
+      foods: resFood,
+      categories: resCategories
+    }
+  }
 }
 
 export default Home

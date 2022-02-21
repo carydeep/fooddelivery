@@ -6,7 +6,7 @@ import queryString from 'query-string';
 // Please have a look at here `https://github.com/axios/axios#request-config` for the full list of configs
 
 const axiosClient = axios.create({
-    baseURL: 'https://food-delivery-web-demo.herokuapp.com',
+    baseURL: process.env.API_URL,
     headers: {
         'content-type': 'application/json',
     },
