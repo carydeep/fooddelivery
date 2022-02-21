@@ -7,8 +7,12 @@ import foodApi from './api/foodApi'
 import { Categories, Food } from '../models'
 import { motion } from 'framer-motion'
 import { BsPlusLg, BsXLg } from 'react-icons/bs'
+import { useUser } from '@auth0/nextjs-auth0'
+import Link from 'next/link'
 
 const Home = ({ foods, categories }: { foods: Array<Food>, categories: Array<Categories> }) => {
+  const { user, error, isLoading } = useUser()
+
   const [widthSlide, setWidthSlide] = useState<number>(0)
   const [showCategory, setShowCategory] = useState<number>(0)
   const [listFoods, setListFoods] = useState<Array<Food>>([])
@@ -29,6 +33,7 @@ const Home = ({ foods, categories }: { foods: Array<Food>, categories: Array<Cat
       setWidthSlide(slide.current?.scrollWidth - slide.current?.offsetWidth)
     }
   }, [categories])
+  console.log(user)
   return (
     <div className={styles.container}>
       <Head>
@@ -61,7 +66,12 @@ const Home = ({ foods, categories }: { foods: Array<Food>, categories: Array<Cat
               <li className={styles.header__right__funct__item}>About Us</li>
               <li className={styles.header__right__funct__item}>Reviews</li>
             </ul>
-            <button className={styles.header__right__register}>Register</button>
+            {user ?
+              (
+                <a className={styles.header__right__register} href='/api/auth/logout'>LOGOUT</a>
+              ) : (
+                <a className={styles.header__right__register} href='/api/auth/login'>REGISTER</a>
+              )}
           </div>
         </div>
         <div className={styles.main}>
