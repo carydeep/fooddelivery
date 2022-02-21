@@ -68,9 +68,9 @@ const Home = ({ foods, categories }: { foods: Array<Food>, categories: Array<Cat
             </ul>
             {user ?
               (
-                <a className={styles.header__right__register} href='/api/auth/logout'>LOGOUT</a>
+                <Link href='/api/auth/logout'><a className={styles.header__right__register}>LOGOUT</a></Link>
               ) : (
-                <a className={styles.header__right__register} href='/api/auth/login'>REGISTER</a>
+                <Link href='/api/auth/login'><a className={styles.header__right__register}>REGISTER</a></Link>
               )}
           </div>
         </div>
