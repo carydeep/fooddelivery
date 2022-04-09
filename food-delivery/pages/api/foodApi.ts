@@ -1,4 +1,3 @@
-import { AxiosResponse } from "axios";
 import { Categories, Food } from "../../models";
 import axiosClient from "./axiosClient";
 

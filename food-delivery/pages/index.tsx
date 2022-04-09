@@ -9,31 +9,20 @@ import { motion } from 'framer-motion'
 import { BsPlusLg, BsXLg } from 'react-icons/bs'
 import { useUser } from '@auth0/nextjs-auth0'
 import Link from 'next/link'
+import ListFood from '../components/listFood'
 
 const Home = ({ foods, categories }: { foods: Array<Food>, categories: Array<Categories> }) => {
   const { user, error, isLoading } = useUser()
 
   const [widthSlide, setWidthSlide] = useState<number>(0)
   const [showCategory, setShowCategory] = useState<number>(0)
-  const [listFoods, setListFoods] = useState<Array<Food>>([])
   const slide = useRef<null | HTMLDivElement>(null)
 
-  useEffect(() => {
-    const changeListFood = () => {
-      if (showCategory !== 0) {
-        setListFoods(foods.filter(food => food.category === showCategory))
-      } else {
-        setListFoods(foods)
-      }
-    }
-    changeListFood()
-  }, [showCategory])
   useEffect(() => {
     if (slide.current?.scrollWidth != undefined && slide.current?.offsetWidth != undefined) {
       setWidthSlide(slide.current?.scrollWidth - slide.current?.offsetWidth)
     }
   }, [categories])
-  console.log(user)
   return (
     <div className={styles.container}>
       <Head>
@@ -113,46 +102,13 @@ const Home = ({ foods, categories }: { foods: Array<Food>, categories: Array<Cat
             })}
           </motion.div>
         </motion.div>
-        <div className={styles.listItems}>
-          <div className={styles.listItems__header}>
-            <div className={styles.listItems__header__name}>All Items</div>
-            <div className={styles.select__box}>
-              <select onChange={(e) => setShowCategory(Number(e.target.value))} className={styles.listItems__header__option}>
-                <option value="0">View all</option>
-                <option value="2">Fast Food</option>
-                <option value="3">Salad</option>
-                <option value="6">Fruit</option>
-                <option value="5">Side Dishes</option>
-                <option value="4">Drink</option>
-              </select>
-            </div>
-          </div>
-          <motion.div layout className={styles.listItems__content}>
-            {listFoods?.map(food => {
-              return (
-                <motion.div layout className={styles.listItems__content__item} key={food.id}>
-                  {food.trend === 'best-seller' &&
-                    <div className={styles.listItems__content__item__trend}>
-                      <img className={styles.listItems__content__item__trend__img} src="flame.png" />
-                    </div>}
-                  {food.trend === 'best-vote' &&
-                    <div className={styles.listItems__content__item__trend}>
-                      <img className={styles.listItems__content__item__trend__img} src="heart.png" />
-                    </div>}
-                  <img className={styles.listItems__content__item__img} src={food.image} />
-                  <div className={styles.listItems__content__item__name}>{food.name}</div>
-                  <div className={styles.listItems__content__item__descript}>{food.description}</div>
-                  <div className={styles.listItems__content__item__info}>
-                    <div className={styles.listItems__content__item__info__food}>
-                      <div className={styles.listItems__content__item__info__food__price}>${food.price}</div>
-                      <div className={styles.listItems__content__item__info__food__weight}>{food.weight}g</div>
-                    </div>
-                    <button type='button' className={styles.listItems__content__item__info__button}><BsPlusLg /></button>
-                  </div>
-                </motion.div>
-              )
-            })}
-          </motion.div>
+        <div className={styles.section2__listfood}>
+          <ListFood
+            categories={categories}
+            foods={foods}
+            selectedCategory={showCategory}
+            height={560}
+          />
         </div>
       </section>
       <section className={styles.advertise}>
