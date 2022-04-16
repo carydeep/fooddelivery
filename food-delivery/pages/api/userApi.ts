@@ -21,7 +21,7 @@ const userApi = {
         const url = `/api/v2/users/${idUser}`
         return axiosUser.get(url)
     },
-    addOrder: (order: OrderUser, idUser: string) => {
+    addOrder: (order: OrderUser | undefined, idUser: string) => {
         const url = `/api/v2/users/${idUser}`
         const body = {
             "user_metadata": {

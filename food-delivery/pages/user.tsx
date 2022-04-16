@@ -16,25 +16,18 @@ import ListFood from '../components/listFood';
 import { BsChevronRight } from 'react-icons/bs';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0'
 import userApi from './api/userApi';
-import axiosUser from './api/axiosUser';
 import PopUpShoppingCart from '../components/popUp/shoppingCart';
+import { getOrders, ordersSlice } from '../slices/ordersSlice';
+import { store } from '../store';
+import { unwrapResult } from '@reduxjs/toolkit';
+import { useAppSelector } from '../hooks';
 
 function User({ foods, categories }: { foods: Array<Food>, categories: Array<Categories> }) {
     const { user } = useUser()
     const [selectedCategory, setSelectedCategory] = useState<number>(0)
     const [promote, setPromote] = useState<Array<Food>>([])
     const [showShoppingCart, setShowShoppingCart] = useState<boolean>(false)
-    const [orders, setOrders] = useState<OrderUser>()
-    useEffect(() => {
-        const fetchorder = async () => {
-            if (user) {
-                const resOrder = await userApi.getUserInfo(user.sub)
-                resOrder.data.user_metadata?.orders && setOrders(resOrder.data.user_metadata?.orders)
-            }
-        }
-        fetchorder()
-    }, [user])
-    console.log(orders)
+    const orders = useAppSelector(state => state.order.current)
     useEffect(() => {
         const filterHotTrend = () => {
             const listTrend = foods.filter(food => {
@@ -43,21 +36,11 @@ function User({ foods, categories }: { foods: Array<Food>, categories: Array<Cat
             setPromote(listTrend.slice(0, 2))
         }
         filterHotTrend()
-        const getUser = async () => {
-            if (user) {
-                const res = await userApi.getUserInfo(user.sub)
-            }
-        }
-        getUser()
     }, [user])
 
     const handeChangeShowShoppingCart = useCallback(() => {
         setShowShoppingCart(!showShoppingCart)
     }, [showShoppingCart])
-
-    const handeAddOrder = (idFood: number) => {
-
-    }
     return (
         <div className={styles.container}>
             {showShoppingCart && (
@@ -110,7 +93,7 @@ function User({ foods, categories }: { foods: Array<Food>, categories: Array<Cat
                         <li style={{ position: 'relative' }}><IoMdNotificationsOutline className={styles.header__notice__item} /></li>
                         <li style={{ position: 'relative' }} onClick={() => setShowShoppingCart(!showShoppingCart)}>
                             <MdOutlineShoppingBag className={styles.header__notice__item} />
-                            {orders?.orderItems && <span className={styles.header__notice__note}>{orders?.orderItems.length}</span>}
+                            {orders && <span className={styles.header__notice__note}>{orders.orderItems.length}</span>}
                         </li>
                         <li style={{ position: 'relative' }}><Link href='/api/auth/logout'><a><IoLogOutOutline className={`${styles.header__notice__item} ${styles.warning}`} /></a></Link></li>
                     </ul>

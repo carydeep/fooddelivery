@@ -6,6 +6,8 @@ import { BsPlusLg } from 'react-icons/bs';
 import { Categories, Food, OrderUser } from '../models';
 import axiosUser from '../pages/api/axiosUser';
 import userApi from '../pages/api/userApi';
+import { ordersSlice } from '../slices/ordersSlice';
+import { store } from '../store';
 import styles from '../styles/ListFood.module.scss'
 
 interface Props {
@@ -46,72 +48,72 @@ function ListFood(props: Props) {
         }
         changeListFood()
     }, [showCategory])
-
     const handleAddOrders = async (idFood: number) => {
         const foodInfo = listFoods.find(food => food.id === idFood)
-        let newOrder = Object.assign({}, orders)
-        if (Object.keys(newOrder).length === 0 && foodInfo) {
-            const newOrder = {
-                orderItems: [{
-                    id: foodInfo.id,
-                    img: foodInfo.image,
-                    quantity: 1,
-                    price: foodInfo.price,
-                    name: foodInfo.name
-                }],
-                totalAmount: foodInfo.price
-            }
-            if (user && typeof (user.sub) == 'string') {
-                await userApi.addOrder(newOrder, user.sub).
-                    then(async () => {
-                        const resOrder = await userApi.getUserInfo(user.sub)
-                        resOrder.data.user_metadata?.orders && setOrders(resOrder.data.user_metadata?.orders)
-                    })
-            }
-        } else if (newOrder.orderItems && foodInfo && orders) {
-            const isAlreadyInArray = newOrder.orderItems.filter(order => order?.id === idFood).length > 0
-            if (isAlreadyInArray) {
-                const indexInArray = newOrder.orderItems.findIndex(order => order?.id === idFood)
-                newOrder.orderItems[indexInArray].quantity += 1
-                newOrder.orderItems[indexInArray].price += foodInfo.price
-                newOrder.totalAmount += foodInfo.price
-                if (user && typeof (user.sub) == 'string') {
-                    await userApi.addOrder(newOrder, user.sub).
-                        then(async () => {
-                            const resOrder = await userApi.getUserInfo(user.sub)
-                            resOrder.data.user_metadata?.orders && setOrders(resOrder.data.user_metadata?.orders)
-                        })
-                }
-            } else {
-                const newOrder = {
-                    orderItems: [...orders.orderItems, {
-                        id: foodInfo.id,
-                        img: foodInfo.image,
-                        quantity: 1,
-                        price: foodInfo.price,
-                        name: foodInfo.name
-                    }],
-                    totalAmount: orders.totalAmount + foodInfo.price
-                }
-                if (user && typeof (user.sub) == 'string') {
-                    await userApi.addOrder(newOrder, user.sub).
-                        then(async () => {
-                            const resOrder = await userApi.getUserInfo(user.sub)
-                            resOrder.data.user_metadata?.orders && setOrders(resOrder.data.user_metadata?.orders)
-                        })
-                }
+        if (foodInfo && user?.sub) {
+            const actionAddOrder = ordersSlice.actions.add(foodInfo)
+            store.dispatch(actionAddOrder)
+            try {
+                await userApi.addOrder(store.getState().order.current, user.sub)
+            } catch (error) {
+                console.log('error:' + error)
             }
         }
+        // let newOrder = Object.assign({}, orders)
+        // if (Object.keys(newOrder).length === 0 && foodInfo) {
+        //     const newOrder = {
+        //         orderItems: [{
+        //             id: foodInfo.id,
+        //             img: foodInfo.image,
+        //             quantity: 1,
+        //             price: foodInfo.price,
+        //             name: foodInfo.name
+        //         }],
+        //         totalAmount: foodInfo.price
+        //     }
+        //     if (user && typeof (user.sub) == 'string') {
+        //         await userApi.addOrder(newOrder, user.sub).
+        //             then(async () => {
+        //                 const resOrder = await userApi.getUserInfo(user.sub)
+        //                 resOrder.data.user_metadata?.orders && setOrders(resOrder.data.user_metadata?.orders)
+        //             })
+        //     }
+        // } else if (newOrder.orderItems && foodInfo && orders) {
+        //     const isAlreadyInArray = newOrder.orderItems.filter(order => order?.id === idFood).length > 0
+        //     if (isAlreadyInArray) {
+        //         const indexInArray = newOrder.orderItems.findIndex(order => order?.id === idFood)
+        //         newOrder.orderItems[indexInArray].quantity += 1
+        //         newOrder.orderItems[indexInArray].price += foodInfo.price
+        //         newOrder.totalAmount += foodInfo.price
+        //         if (user && typeof (user.sub) == 'string') {
+        //             await userApi.addOrder(newOrder, user.sub).
+        //                 then(async () => {
+        //                     const resOrder = await userApi.getUserInfo(user.sub)
+        //                     resOrder.data.user_metadata?.orders && setOrders(resOrder.data.user_metadata?.orders)
+        //                 })
+        //         }
+        //     } else {
+        //         const newOrder = {
+        //             orderItems: [...orders.orderItems, {
+        //                 id: foodInfo.id,
+        //                 img: foodInfo.image,
+        //                 quantity: 1,
+        //                 price: foodInfo.price,
+        //                 name: foodInfo.name
+        //             }],
+        //             totalAmount: orders.totalAmount + foodInfo.price
+        //         }
+        //         if (user && typeof (user.sub) == 'string') {
+        //             await userApi.addOrder(newOrder, user.sub).
+        //                 then(async () => {
+        //                     const resOrder = await userApi.getUserInfo(user.sub)
+        //                     resOrder.data.user_metadata?.orders && setOrders(resOrder.data.user_metadata?.orders)
+        //                 })
+        //         }
+        //     }
+        // }
 
 
-
-        // newOrder.orderItems = [...newOrder.orderItems,{
-        //     id:idFood,
-        //     img:foodInfo?.image,
-        //     quantity:3,
-        //     price:foodInfo?.price,
-        //     name:foodInfo?.name,
-        // }]
     }
     return (
         <div className={styles.listItems}>
