@@ -8,11 +8,12 @@ import styles from '../../styles/PopUpShoppingCart.module.scss'
 interface Props {
     orders?: OrderUser,
     showPopUp: boolean,
-    onShow: Function
+    onShow: Function,
+    addOrder: Function
 }
 
 function PopUpShoppingCart(props: Props) {
-    const { showPopUp, orders, onShow } = props;
+    const { showPopUp, orders, onShow, addOrder } = props;
     const ref = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
@@ -44,7 +45,7 @@ function PopUpShoppingCart(props: Props) {
                                     <div className={styles.listOrder__item__info__left}>
                                         <div className={styles.listOrder__item__info__left__name}>{order.name}</div>
                                         <div className={styles.listOrder__item__info__left__adjust}>
-                                            <button className={styles.listOrder__item__info__left__adjust__button}><BsPlusLg /></button>
+                                            <button onClick={() => { addOrder(order.id) }} className={styles.listOrder__item__info__left__adjust__button}><BsPlusLg /></button>
                                             <div className={styles.listOrder__item__info__left__adjust__quantity}>{order.quantity}</div>
                                             <button className={styles.listOrder__item__info__left__adjust__button}><FaMinus /></button>
                                         </div>

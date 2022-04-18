@@ -15,19 +15,35 @@ import { Categories, Food, OrderUser } from '../models';
 import ListFood from '../components/listFood';
 import { BsChevronRight } from 'react-icons/bs';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0'
-import userApi from './api/userApi';
 import PopUpShoppingCart from '../components/popUp/shoppingCart';
 import { getOrders, ordersSlice } from '../slices/ordersSlice';
 import { store } from '../store';
-import { unwrapResult } from '@reduxjs/toolkit';
 import { useAppSelector } from '../hooks';
+import { getFoods } from '../slices/foodSlice';
+import userApi from './api/userApi';
 
-function User({ foods, categories }: { foods: Array<Food>, categories: Array<Categories> }) {
+function User({ categories }: { foods: Array<Food>, categories: Array<Categories> }) {
     const { user } = useUser()
     const [selectedCategory, setSelectedCategory] = useState<number>(0)
     const [promote, setPromote] = useState<Array<Food>>([])
     const [showShoppingCart, setShowShoppingCart] = useState<boolean>(false)
     const orders = useAppSelector(state => state.order.current)
+    const foods = useAppSelector(state => state.food.current)
+    useEffect(() => {
+        const updateFood = async () => {
+            await store.dispatch(getFoods())
+        }
+        updateFood()
+    }, [])
+    useEffect(() => {
+        const updateOrder = async () => {
+            if (user?.sub) {
+                await store.dispatch(getOrders(user.sub))
+            }
+        }
+        updateOrder()
+    }, [user])
+
     useEffect(() => {
         const filterHotTrend = () => {
             const listTrend = foods.filter(food => {
@@ -36,11 +52,25 @@ function User({ foods, categories }: { foods: Array<Food>, categories: Array<Cat
             setPromote(listTrend.slice(0, 2))
         }
         filterHotTrend()
-    }, [user])
+    }, [foods])
 
     const handeChangeShowShoppingCart = useCallback(() => {
         setShowShoppingCart(!showShoppingCart)
     }, [showShoppingCart])
+
+    const handleAddOrders = async (idFood: number) => {
+        const foodInfo = foods.find(food => food.id === idFood)
+        if (foodInfo && user?.sub) {
+            const actionAddOrder = ordersSlice.actions.add(foodInfo)
+            store.dispatch(actionAddOrder)
+            try {
+                await userApi.addOrder(store.getState().order.current, user.sub)
+            } catch (error) {
+                console.log('error:' + error)
+            }
+        }
+    }
+
     return (
         <div className={styles.container}>
             {showShoppingCart && (
@@ -48,6 +78,7 @@ function User({ foods, categories }: { foods: Array<Food>, categories: Array<Cat
                     orders={orders}
                     showPopUp={showShoppingCart}
                     onShow={handeChangeShowShoppingCart}
+                    addOrder={handleAddOrders}
                 />
             )}
             <div className={styles.function}>
@@ -93,7 +124,7 @@ function User({ foods, categories }: { foods: Array<Food>, categories: Array<Cat
                         <li style={{ position: 'relative' }}><IoMdNotificationsOutline className={styles.header__notice__item} /></li>
                         <li style={{ position: 'relative' }} onClick={() => setShowShoppingCart(!showShoppingCart)}>
                             <MdOutlineShoppingBag className={styles.header__notice__item} />
-                            {orders && <span className={styles.header__notice__note}>{orders.orderItems.length}</span>}
+                            {orders?.orderItems && <span className={styles.header__notice__note}>{orders.orderItems.length}</span>}
                         </li>
                         <li style={{ position: 'relative' }}><Link href='/api/auth/logout'><a><IoLogOutOutline className={`${styles.header__notice__item} ${styles.warning}`} /></a></Link></li>
                     </ul>
@@ -120,7 +151,6 @@ function User({ foods, categories }: { foods: Array<Food>, categories: Array<Cat
                         <div className={styles.main__listfood__container}>
                             <ListFood
                                 categories={categories}
-                                foods={foods}
                                 selectedCategory={selectedCategory}
                                 height={305}
                             />
@@ -164,11 +194,9 @@ function User({ foods, categories }: { foods: Array<Food>, categories: Array<Cat
 
 export const getServerSideProps: GetServerSideProps = withPageAuthRequired({
     async getServerSideProps() {
-        const resFood = await foodApi.getFood()
         const resCategories = await foodApi.getCategories()
         return {
             props: {
-                foods: resFood,
                 categories: resCategories
             }
         }

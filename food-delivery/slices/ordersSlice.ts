@@ -27,35 +27,37 @@ export const ordersSlice = createSlice({
     initialState,
     reducers: {
         add: (state, action: PayloadAction<Food>) => {
-            const { id, image, price, name } = action.payload
-            if (state.current === undefined) {
-                state.current = {
-                    orderItems: [{
-                        id: id,
-                        img: image,
-                        quantity: 1,
-                        price: price,
-                        name: name
-                    }],
-                    totalAmount: price
-                }
-            } else {
-                const isAlreadyInArray = state.current.orderItems.filter(order => order.id === id).length > 0
-                if (isAlreadyInArray) {
-                    const indexInArray = state.current.orderItems.findIndex(order => order.id === id)
-                    state.current.orderItems[indexInArray].quantity += 1
-                    state.current.orderItems[indexInArray].price += price
-                    state.current.totalAmount += price
-                } else {
-                    const newOrder = {
-                        id: id,
-                        img: image,
-                        quantity: 1,
-                        price: price,
-                        name: name
+            if (!state.loading) {
+                const { id, image, price, name } = action.payload
+                if (state.current === undefined) {
+                    state.current = {
+                        orderItems: [{
+                            id: id,
+                            img: image,
+                            quantity: 1,
+                            price: price,
+                            name: name
+                        }],
+                        totalAmount: price
                     }
-                    state.current.orderItems.push(newOrder)
-                    state.current.totalAmount += price
+                } else {
+                    const isAlreadyInArray = state.current.orderItems.filter(order => order.id === id).length > 0
+                    if (isAlreadyInArray) {
+                        const indexInArray = state.current.orderItems.findIndex(order => order.id === id)
+                        state.current.orderItems[indexInArray].quantity += 1
+                        state.current.orderItems[indexInArray].price += price
+                        state.current.totalAmount += price
+                    } else {
+                        const newOrder = {
+                            id: id,
+                            img: image,
+                            quantity: 1,
+                            price: price,
+                            name: name
+                        }
+                        state.current.orderItems.push(newOrder)
+                        state.current.totalAmount += price
+                    }
                 }
             }
         }

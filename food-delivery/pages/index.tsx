@@ -10,13 +10,22 @@ import { BsPlusLg, BsXLg } from 'react-icons/bs'
 import { useUser } from '@auth0/nextjs-auth0'
 import Link from 'next/link'
 import ListFood from '../components/listFood'
+import { store } from '../store'
+import { getFoods } from '../slices/foodSlice'
 
-const Home = ({ foods, categories }: { foods: Array<Food>, categories: Array<Categories> }) => {
+const Home = ({ categories }: { foods: Array<Food>, categories: Array<Categories> }) => {
   const { user, error, isLoading } = useUser()
 
   const [widthSlide, setWidthSlide] = useState<number>(0)
   const [showCategory, setShowCategory] = useState<number>(0)
   const slide = useRef<null | HTMLDivElement>(null)
+
+  useEffect(() => {
+    const updateFood = async () => {
+      await store.dispatch(getFoods())
+    }
+    updateFood()
+  }, [])
 
   useEffect(() => {
     if (slide.current?.scrollWidth != undefined && slide.current?.offsetWidth != undefined) {
@@ -105,7 +114,6 @@ const Home = ({ foods, categories }: { foods: Array<Food>, categories: Array<Cat
         <div className={styles.section2__listfood}>
           <ListFood
             categories={categories}
-            foods={foods}
             selectedCategory={showCategory}
             height={560}
           />
@@ -151,12 +159,10 @@ const Home = ({ foods, categories }: { foods: Array<Food>, categories: Array<Cat
   )
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const resFood = await foodApi.getFood()
+export const getServerSideProps: GetServerSideProps = async () => {
   const resCategories = await foodApi.getCategories()
   return {
     props: {
-      foods: resFood,
       categories: resCategories
     }
   }

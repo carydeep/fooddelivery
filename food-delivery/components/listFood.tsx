@@ -1,8 +1,9 @@
 import { useUser, withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { motion } from 'framer-motion';
 import { GetServerSideProps, NextPage } from 'next';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { BsPlusLg } from 'react-icons/bs';
+import { useAppSelector } from '../hooks';
 import { Categories, Food, OrderUser } from '../models';
 import axiosUser from '../pages/api/axiosUser';
 import userApi from '../pages/api/userApi';
@@ -12,17 +13,17 @@ import styles from '../styles/ListFood.module.scss'
 
 interface Props {
     categories: Array<Categories>,
-    foods: Array<Food>,
     selectedCategory: number,
     height: number;
 }
 
 function ListFood(props: Props) {
     const { user } = useUser()
-    const { categories, foods, selectedCategory, height } = props
+    const { categories, selectedCategory, height } = props
     const [showCategory, setShowCategory] = useState<number>(selectedCategory)
     const [listFoods, setListFoods] = useState<Array<Food>>([])
     const [orders, setOrders] = useState<OrderUser>()
+    const foods = useAppSelector(state => state.food.current)
 
     useEffect(() => {
         const fetchorder = async () => {
@@ -47,9 +48,9 @@ function ListFood(props: Props) {
             }
         }
         changeListFood()
-    }, [showCategory])
+    }, [showCategory, foods])
     const handleAddOrders = async (idFood: number) => {
-        const foodInfo = listFoods.find(food => food.id === idFood)
+        const foodInfo = foods.find(food => food.id === idFood)
         if (foodInfo && user?.sub) {
             const actionAddOrder = ordersSlice.actions.add(foodInfo)
             store.dispatch(actionAddOrder)
@@ -59,61 +60,6 @@ function ListFood(props: Props) {
                 console.log('error:' + error)
             }
         }
-        // let newOrder = Object.assign({}, orders)
-        // if (Object.keys(newOrder).length === 0 && foodInfo) {
-        //     const newOrder = {
-        //         orderItems: [{
-        //             id: foodInfo.id,
-        //             img: foodInfo.image,
-        //             quantity: 1,
-        //             price: foodInfo.price,
-        //             name: foodInfo.name
-        //         }],
-        //         totalAmount: foodInfo.price
-        //     }
-        //     if (user && typeof (user.sub) == 'string') {
-        //         await userApi.addOrder(newOrder, user.sub).
-        //             then(async () => {
-        //                 const resOrder = await userApi.getUserInfo(user.sub)
-        //                 resOrder.data.user_metadata?.orders && setOrders(resOrder.data.user_metadata?.orders)
-        //             })
-        //     }
-        // } else if (newOrder.orderItems && foodInfo && orders) {
-        //     const isAlreadyInArray = newOrder.orderItems.filter(order => order?.id === idFood).length > 0
-        //     if (isAlreadyInArray) {
-        //         const indexInArray = newOrder.orderItems.findIndex(order => order?.id === idFood)
-        //         newOrder.orderItems[indexInArray].quantity += 1
-        //         newOrder.orderItems[indexInArray].price += foodInfo.price
-        //         newOrder.totalAmount += foodInfo.price
-        //         if (user && typeof (user.sub) == 'string') {
-        //             await userApi.addOrder(newOrder, user.sub).
-        //                 then(async () => {
-        //                     const resOrder = await userApi.getUserInfo(user.sub)
-        //                     resOrder.data.user_metadata?.orders && setOrders(resOrder.data.user_metadata?.orders)
-        //                 })
-        //         }
-        //     } else {
-        //         const newOrder = {
-        //             orderItems: [...orders.orderItems, {
-        //                 id: foodInfo.id,
-        //                 img: foodInfo.image,
-        //                 quantity: 1,
-        //                 price: foodInfo.price,
-        //                 name: foodInfo.name
-        //             }],
-        //             totalAmount: orders.totalAmount + foodInfo.price
-        //         }
-        //         if (user && typeof (user.sub) == 'string') {
-        //             await userApi.addOrder(newOrder, user.sub).
-        //                 then(async () => {
-        //                     const resOrder = await userApi.getUserInfo(user.sub)
-        //                     resOrder.data.user_metadata?.orders && setOrders(resOrder.data.user_metadata?.orders)
-        //                 })
-        //         }
-        //     }
-        // }
-
-
     }
     return (
         <div className={styles.listItems}>

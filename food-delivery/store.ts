@@ -3,11 +3,13 @@ import {
     configureStore,
     ThunkAction,
 } from '@reduxjs/toolkit';
+import foodReducer from './slices/foodSlice';
 import orderReducer from './slices/ordersSlice';
 
 export const store = configureStore({
     reducer: {
-        order: orderReducer
+        order: orderReducer,
+        food: foodReducer
         // This is where we add reducers.
         // Since we don't have any yet, leave this empty
     },
