@@ -1,8 +1,14 @@
+import { useUser } from '@auth0/nextjs-auth0';
 import React, { memo, useEffect, useRef, useState } from 'react';
 import { BsPlusLg } from 'react-icons/bs';
 import { FaMinus } from 'react-icons/fa';
 import { MdClose } from 'react-icons/md';
+import { useAppSelector } from '../../hooks';
 import { OrderUser } from '../../models';
+import axiosUser from '../../pages/api/axiosUser';
+import userApi from '../../pages/api/userApi';
+import { ordersSlice } from '../../slices/ordersSlice';
+import { store } from '../../store';
 import styles from '../../styles/PopUpShoppingCart.module.scss'
 
 interface Props {
@@ -15,6 +21,8 @@ interface Props {
 function PopUpShoppingCart(props: Props) {
     const { showPopUp, orders, onShow, addOrder } = props;
     const ref = useRef<HTMLDivElement>(null)
+    const foods = useAppSelector(state => state.food.current)
+    const { user } = useUser()
 
     useEffect(() => {
         const checkClickOutSidePopUp = (e: any) => {
@@ -30,6 +38,18 @@ function PopUpShoppingCart(props: Props) {
         }
     }, [showPopUp])
 
+    const handleRemoveOrder = async (idFood: number) => {
+        const food = foods.find(food => food.id === idFood)
+        if (food && user?.sub) {
+            const actionRemoveOrder = ordersSlice.actions.remove(food)
+            store.dispatch(actionRemoveOrder)
+            try {
+                await userApi.removeOrder(store.getState().order.current, user.sub)
+            } catch (error) {
+                console.log(error)
+            }
+        }
+    }
 
     return (
         <div className={styles.container}>
@@ -47,7 +67,7 @@ function PopUpShoppingCart(props: Props) {
                                         <div className={styles.listOrder__item__info__left__adjust}>
                                             <button onClick={() => { addOrder(order.id) }} className={styles.listOrder__item__info__left__adjust__button}><BsPlusLg /></button>
                                             <div className={styles.listOrder__item__info__left__adjust__quantity}>{order.quantity}</div>
-                                            <button className={styles.listOrder__item__info__left__adjust__button}><FaMinus /></button>
+                                            <button onClick={() => { handleRemoveOrder(order.id) }} className={styles.listOrder__item__info__left__adjust__button}><FaMinus /></button>
                                         </div>
                                     </div>
                                     <div className={styles.listOrder__item__info__right}>{order.price}</div>

@@ -49,6 +49,7 @@ function ListFood(props: Props) {
         }
         changeListFood()
     }, [showCategory, foods])
+
     const handleAddOrders = async (idFood: number) => {
         const foodInfo = foods.find(food => food.id === idFood)
         if (foodInfo && user?.sub) {
@@ -61,6 +62,7 @@ function ListFood(props: Props) {
             }
         }
     }
+
     return (
         <div className={styles.listItems}>
             <div className={styles.listItems__header}>

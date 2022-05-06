@@ -60,6 +60,24 @@ export const ordersSlice = createSlice({
                     }
                 }
             }
+        },
+        remove: (state, action: PayloadAction<Food>) => {
+            if (!state.loading) {
+                const { id, price } = action.payload
+                if (state.current) {
+                    const orderItems = state.current.orderItems
+                    const findIndex = orderItems.map(orderItem => orderItem.id).indexOf(id)
+                    if (findIndex > -1) {
+                        if (orderItems[findIndex].quantity > 1) {
+                            orderItems[findIndex].quantity -= 1
+                            orderItems[findIndex].price -= price
+                            state.current.totalAmount -= price
+                        } else {
+                            orderItems.splice(findIndex, 1)
+                        }
+                    }
+                }
+            }
         }
     },
     extraReducers: (builder) => {

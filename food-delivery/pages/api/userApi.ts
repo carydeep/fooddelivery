@@ -29,6 +29,15 @@ const userApi = {
             }
         }
         return axiosUser.patch(url, body)
+    },
+    removeOrder: (order: OrderUser | undefined, idUser: string) => {
+        const url = `/api/v2/users/${idUser}`
+        const body = {
+            "user_metadata": {
+                "orders": order
+            }
+        }
+        return axiosUser.patch(url, body)
     }
 }
 
