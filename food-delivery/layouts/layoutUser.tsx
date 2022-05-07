@@ -1,4 +1,4 @@
-import React, { ReactElement, ReactNode, useCallback, useState } from 'react';
+import React, { ReactNode, useCallback, useState } from 'react';
 import styles from '../styles/LayoutUser.module.scss'
 import PopUpShoppingCart from '../components/popUp/shoppingCart';
 import { useAppSelector } from '../hooks';
@@ -37,7 +37,6 @@ function LayoutUser({ children }: { children: ReactNode }) {
             }
         }
     }
-    console.log({ children })
     return (
         <div className={styles.container}>
             {showShoppingCart && (

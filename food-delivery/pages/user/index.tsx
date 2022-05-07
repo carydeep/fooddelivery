@@ -1,39 +1,28 @@
 import { useUser } from '@auth0/nextjs-auth0';
 import React, { ReactElement, useCallback, useEffect, useState } from 'react';
-import styles from '../styles/User.module.scss'
-import { AiOutlineHome } from 'react-icons/ai'
-import { BiCategory, BiDownload, BiMap } from 'react-icons/bi'
-import { MdDeliveryDining, MdOutlineShoppingBag } from 'react-icons/md'
-import { GoSettings } from 'react-icons/go'
-import { BsInboxes, BsPlusLg, BsSearch } from 'react-icons/bs'
-import { IoMdNotificationsOutline } from 'react-icons/io'
-import { IoLogOutOutline } from 'react-icons/io5'
-import Link from 'next/link';
+import styles from '../../styles/User.module.scss'
 import { GetServerSideProps } from 'next';
-import foodApi from './api/foodApi';
-import { Categories, Food, OrderUser } from '../models';
-import ListFood from '../components/listFood';
-import { BsChevronRight } from 'react-icons/bs';
+import foodApi from '../api/foodApi';
+import { Categories, Food } from '../../models';
+import ListFood from '../../components/listFood';
+import { BsChevronRight, BsPlusLg } from 'react-icons/bs';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0'
-import PopUpShoppingCart from '../components/popUp/shoppingCart';
-import { getOrders, ordersSlice } from '../slices/ordersSlice';
-import { store } from '../store';
-import { useAppSelector } from '../hooks';
-import { getFoods } from '../slices/foodSlice';
-import userApi from './api/userApi';
-import LayoutUser from '../layouts/layoutUser';
+import { getOrders, ordersSlice } from '../../slices/ordersSlice';
+import { store } from '../../store';
+import { useAppSelector } from '../../hooks';
+import { getFoods } from '../../slices/foodSlice';
+import userApi from '../api/userApi';
+import LayoutUser from '../../layouts/layoutUser';
 
 function User({ categories }: { categories: Array<Categories> }) {
     const { user } = useUser()
     const [selectedCategory, setSelectedCategory] = useState<number>(0)
     const [promote, setPromote] = useState<Array<Food>>([])
-    const [showShoppingCart, setShowShoppingCart] = useState<boolean>(false)
     const orders = useAppSelector(state => state.order.current)
     const foods = useAppSelector(state => state.food.current)
     useEffect(() => {
         const updateFood = async () => {
             await store.dispatch(getFoods())
-            const resCategories = await foodApi.getCategories()
         }
         updateFood()
     }, [])
@@ -55,10 +44,6 @@ function User({ categories }: { categories: Array<Categories> }) {
         }
         filterHotTrend()
     }, [foods])
-
-    const handeChangeShowShoppingCart = useCallback(() => {
-        setShowShoppingCart(!showShoppingCart)
-    }, [showShoppingCart])
 
     const handleAddOrders = async (idFood: number) => {
         const foodInfo = foods.find(food => food.id === idFood)

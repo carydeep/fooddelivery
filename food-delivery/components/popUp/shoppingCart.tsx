@@ -1,4 +1,5 @@
 import { useUser } from '@auth0/nextjs-auth0';
+import Link from 'next/link';
 import React, { memo, useEffect, useRef, useState } from 'react';
 import { BsPlusLg } from 'react-icons/bs';
 import { FaMinus } from 'react-icons/fa';
@@ -76,24 +77,10 @@ function PopUpShoppingCart(props: Props) {
                         )
                     })
                     }
-                    {/* <div className={styles.listOrder__item}>
-                        <img className={styles.listOrder__item__img} src="AllFood.png" />
-                        <div className={styles.listOrder__item__info}>
-                            <div className={styles.listOrder__item__info__left}>
-                                <div className={styles.listOrder__item__info__left__name}>Test</div>
-                                <div className={styles.listOrder__item__info__left__adjust}>
-                                    <button className={styles.listOrder__item__info__left__adjust__button}><BsPlusLg /></button>
-                                    <div className={styles.listOrder__item__info__left__adjust__quantity}>1</div>
-                                    <button className={styles.listOrder__item__info__left__adjust__button}><FaMinus /></button>
-                                </div>
-                            </div>
-                            <div className={styles.listOrder__item__info__right}>$48</div>
-                        </div>
-                    </div> */}
                 </div>
-                <button className={styles.toShopping}>
-                    To Shopping Cart
-                </button>
+                <Link href={`/user/cart`} >
+                    <a className={styles.toShopping}>To Shopping Cart</a>
+                </Link>
             </div>
         </div>
     );

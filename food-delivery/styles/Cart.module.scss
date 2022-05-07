@@ -1,0 +1,284 @@
+.container{
+    height: 100%;
+    display: flex;
+    width: 100%;
+}
+
+.shoppingCart{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    width: 60%;
+
+    &__title{
+        color: white;
+        font-size: 25px;
+    }
+
+    &__list{
+        overflow-y: scroll;
+        height: 470px;
+
+        &::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        &::-webkit-scrollbar-track {
+            background: rgb(143, 143, 143);
+            border-radius: 10px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background: rgb(255, 66, 66);
+            border-radius: 10px;
+        }
+
+        &::-webkit-scrollbar-thumb:hover {
+            background: rgb(255, 77, 77);
+        }
+    }
+
+    &__item{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+        background-color: var(--color-card);
+        border-radius: 40px;
+
+        &~.shoppingCart__item{
+            margin-top: 15px;
+        }
+
+        &__img{
+            max-width: 70px;
+            max-height: 70px;
+        }
+
+        &__info{
+            
+            &__name{
+                color: white;
+            }
+
+            &__weight{
+                width: fit-content;
+                font-size: small;
+                text-align: center;
+                background-color: #15141a;
+                color: #414046;
+                padding: 4px 12px;
+                margin-top: 10px;
+                border-radius: 20px;
+            }
+        }
+
+        &__quatity{
+            display:flex;
+            align-items: center;
+            color: white;
+
+            &__button{
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 30px;
+                height: 30px;
+                background-color: #363640;
+                color: white;
+                border: none;
+                border-radius: 50%;
+            }
+
+            &__number{
+                margin: 0 15px;
+            }
+        }
+
+        &__price{
+            font-size: 30px;
+            margin: 0;
+            color: white;
+        }
+
+        &__remove{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            color: white;
+            background-color: var(--color-warning);
+            opacity: .7;
+
+            &:hover{
+                opacity: 1;
+            }
+        }
+    }
+
+    &__code{
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        border-top: 2px solid var(--color-card);
+        padding-top: 10px;
+
+        &__form{
+            &__input{
+                background-color: var(--color-card);
+                border: none;
+                border-radius: 40px;
+                outline: none;
+                padding: 10px 4px;
+                width: 100px;
+                text-align: center;
+                color: white;
+            }
+        }
+
+        &__total{
+            display: flex;
+            align-items: center;
+
+            &__number{
+                display: flex;
+                align-items: center;
+                margin-left: 10px;
+                font-size: 25px;
+                font-weight: bold;
+
+                .unit{
+                    color: var(--green-light);
+                }
+            }
+        }
+    }
+}
+
+.cardDetails{
+    display: flex;
+    flex-direction: column;
+    width: 40%;
+    padding: 40px 40px;
+
+    .title{
+        color: white;
+    }
+
+    .form{
+        display: flex;
+        flex-direction: column;
+
+        .label{
+            color: #414046;
+            font-size: 12px;
+            margin-top: 20px;
+        }
+
+        .inputText{
+            margin-top: 20px;
+            background-color: transparent;
+            border: none;
+            border-bottom: 2px solid var(--color-card);
+            padding: 10px 0px;
+            color: white;
+            font-size: 25px;
+            outline: none;
+
+            &.date{
+                width: 5em;
+            }
+
+            &.year{
+                width: 6em;
+            }
+        }
+
+        .group__radio{
+            display: flex;
+            margin-top: 10px;
+
+            &__input{
+                display: none;
+            }
+
+            .radioMethod{
+                position: relative;
+                padding: 10px 10px 10px 30px;
+                border: 2px solid var(--color-card);
+                border-radius: 10px;
+                cursor: pointer;
+
+                &.active{
+                    border-color: #308a52;
+                }
+
+                &~.radioMethod{
+                    margin-left: 10px;
+                }
+    
+                &::before{
+                    content: '';
+                    width: 15px;
+                    height: 15px;
+                    position: absolute;
+                    background-color: var(--color-card);
+                    border-radius: 50%;
+                    left: 10px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                }
+
+                &.active::before{
+                    width: 9px;
+                    height: 9px;
+                    background-color: var(--green-light);
+                    border: 3px solid #308a52;
+                }
+    
+                &__img{
+                    max-width: 50px;
+                    max-height: 50px;
+                }
+            }
+        }
+
+        .valid{
+            display: flex;
+            align-items: center;
+            gap: 40px;
+
+            &__date{
+                flex: 1;
+
+                &__input{
+                    display: flex;
+                    gap: 10px;
+                }
+            }
+
+            &__cvv{
+                display: flex;
+                flex-direction: column;
+
+                .inputText{
+                    width: 3em;
+                }
+            }
+        }
+    
+        .button{
+            margin-top: 20px;
+            font-size: larger;
+            background-color: var(--green-light);
+            color: white;
+            padding: 20px 20px;
+            border-radius: 40px;
+        }
+    }
+}
+

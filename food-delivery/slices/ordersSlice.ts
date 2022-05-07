@@ -74,7 +74,21 @@ export const ordersSlice = createSlice({
                             state.current.totalAmount -= price
                         } else {
                             orderItems.splice(findIndex, 1)
+                            state.current.totalAmount -= price
                         }
+                    }
+                }
+            }
+        },
+        delete: (state, action: PayloadAction<Food>) => {
+            if (!state.loading) {
+                const { id, price } = action.payload
+                if (state.current) {
+                    const orderItems = state.current.orderItems
+                    const findIndex = orderItems.map(orderItem => orderItem.id).indexOf(id)
+                    if (findIndex > -1) {
+                        state.current.totalAmount -= (price * state.current.orderItems[findIndex].quantity)
+                        orderItems.splice(findIndex, 1)
                     }
                 }
             }

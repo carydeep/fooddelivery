@@ -1,5 +1,12 @@
 $box-image: 70px;
 
+.main {
+    background-color: #111014;
+    padding: 40px;
+    border-top-left-radius: 40px;
+    flex: 1;
+}
+
 .container {
     margin: 0 auto;
     display: flex;
@@ -94,6 +101,8 @@ $box-image: 70px;
 
 .content {
     flex: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 .header {
@@ -156,7 +165,12 @@ $box-image: 70px;
         }
 
         &__item.warning {
-            background-color: #6e1322;
+            background-color: var(--color-warning);
+            opacity: .7;
+
+            &:hover{
+                opacity: 1;
+            }
         }
     }
 }
