@@ -1,6 +1,6 @@
 import { useUser } from '@auth0/nextjs-auth0';
-import { Field, Form, Formik } from 'formik';
-import React, { ReactElement, useEffect } from 'react';
+import { Field, FieldAttributes, FieldInputProps, FieldProps, Form, Formik } from 'formik';
+import React, { ReactElement, useEffect, useState } from 'react';
 import { BsPlusLg } from 'react-icons/bs';
 import { FaMinus } from 'react-icons/fa';
 import { MdClose } from 'react-icons/md';
@@ -11,24 +11,39 @@ import { getOrders, ordersSlice } from '../../slices/ordersSlice';
 import { store } from '../../store';
 import styles from '../../styles/Cart.module.scss'
 import userApi from '../api/userApi';
+import * as Yup from 'yup'
 
 function Cart() {
+    const [dateNow, setDateNow] = useState<string>('')
     const orders = useAppSelector(state => state.order.current)
     const foods = useAppSelector(state => state.food.current)
     const { user } = useUser()
     const initialValue = {
-        paymentMethod: '',
+        paymentMethod: 'visa',
         name: '',
-        cardNumber: null,
-        month: null,
-        year: null,
-        cvv: null
+        cardNumber: '',
+        expireDate: '',
+        cvv: ''
     }
+    const validateSchema = Yup.object().shape({
+        paymentMethod: Yup.string().required(),
+        name: Yup.string().required('This field is required'),
+        cardNumber: Yup.string().length(19, 'You need to type valid card number').required('This field is require'),
+        expireDate: Yup.string().required('This field is required'),
+        cvv: Yup.string().required('This field is required').length(3, 'You must type correct cvv')
+    })
 
     useEffect(() => {
         const updateFood = async () => {
             await store.dispatch(getFoods())
         }
+        const getDateNow = () => {
+            const today = new Date();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const yyyy = today.getFullYear();
+            setDateNow(`${yyyy}-${mm}`)
+        }
+        getDateNow()
         updateFood()
     }, [])
     useEffect(() => {
@@ -39,6 +54,25 @@ function Cart() {
         }
         updateOrder()
     }, [user])
+
+    const cardNumberFormat = (value: string) => {
+        const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '')
+        const matches = v.match(/\d{4,16}/g);
+        const match = matches && matches[0] || ''
+        const parts = []
+        for (let i = 0, len = match.length; i < len; i += 4) {
+            parts.push(match.substring(i, i + 4))
+        }
+        if (parts.length) {
+            return parts.join(' ')
+        } else {
+            return v
+        }
+    }
+
+    const cardCvvFormat = (value: string) => {
+        return value.replace(/\s+/g, '').replace(/[^0-9]/gi, '')
+    }
 
     const handleAddOrders = async (idFood: number) => {
         const foodInfo = foods.find(food => food.id === idFood)
@@ -120,13 +154,15 @@ function Cart() {
                 </p>
                 <Formik
                     initialValues={initialValue}
+                    validationSchema={validateSchema}
                     onSubmit={value => {
                         console.log(value)
                     }}
                 >
                     {formikProps => {
                         const { values, errors } = formikProps
-                        console.log(values)
+                        values.cardNumber = cardNumberFormat(values.cardNumber)
+                        values.cvv = cardCvvFormat(values.cvv)
 
                         return (
                             <Form className={styles.form}>
@@ -143,19 +179,22 @@ function Cart() {
                                 </div>
                                 <label className={styles.label} htmlFor="name">Name and Surname</label>
                                 <Field className={styles.inputText} type="text" id='name' name='name' placeholder='Your name' />
+                                {errors.name && <span className={styles.error}>{errors.name}</span>}
                                 <label className={styles.label} htmlFor="ccn">Card Number</label>
-                                <Field className={styles.inputText} name="cardNumber" type="text" pattern="\d*" maxLength={16} placeholder="XXXX XXXX XXXX XXXX" />
+                                <Field className={styles.inputText} name="cardNumber" type="text" placeholder="XXXX XXXX XXXX XXXX" />
+                                {errors.cardNumber && <span className={styles.error}>{errors.cardNumber}</span>}
                                 <div className={styles.valid}>
                                     <div className={styles.valid__date}>
                                         <div className={styles.label}>Expiration Date</div>
                                         <div className={styles.valid__date__input}>
-                                            <Field className={`${styles.inputText} ${styles.date}`} type="number" min={1} max={12} name='month' placeholder='MM' />
-                                            <Field className={`${styles.inputText} ${styles.year}`} type="number" min={2022} name='year' placeholder='YYYY' />
+                                            <Field className={`${styles.inputText} ${styles.date}`} type="month" name='expireDate' min={dateNow} />
+                                            {errors.expireDate && <span className={styles.error}>{errors.expireDate}</span>}
                                         </div>
                                     </div>
                                     <div className={styles.valid__cvv}>
                                         <label className={styles.label} htmlFor="cvv">CVV</label>
-                                        <Field className={styles.inputText} type="number" name='cvv' id='cvv' max={999} placeholder='XXX' />
+                                        <Field className={styles.inputText} type="text" name='cvv' id='cvv' maxLength={3} placeholder='XXX' />
+                                        {errors.cvv && <span className={styles.error}>{errors.cvv}</span>}
                                     </div>
                                 </div>
                                 <button type='submit' className={styles.button}>Check Out</button>

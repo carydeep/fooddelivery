@@ -52,7 +52,9 @@ function LayoutUser({ children }: { children: ReactNode }) {
                 <h3 className={styles.function__name}>{user?.name}</h3>
                 <ul className={styles.function__option}>
                     <li className={`${styles.function__option__item} ${styles.active}`}>
-                        <AiOutlineHome className={styles.function__option__item__icon} />Home
+                        <Link href={`/user`}>
+                            <a><AiOutlineHome className={styles.function__option__item__icon} />Home</a>
+                        </Link>
                     </li>
                     <li className={styles.function__option__item}>
                         <BsInboxes className={styles.function__option__item__icon} />Catalog
