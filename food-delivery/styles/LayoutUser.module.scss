@@ -5,6 +5,7 @@ $box-image: 70px;
     padding: 40px;
     border-top-left-radius: 40px;
     flex: 1;
+    height: calc(100vh - 4rem);
 }
 
 .container {
@@ -12,6 +13,7 @@ $box-image: 70px;
     display: flex;
     background-color: #18171c;
     height: 100vh;
+    position: relative;
 }
 
 .function {
@@ -110,6 +112,7 @@ $box-image: 70px;
     justify-content: space-between;
     align-items: center;
     padding: 10px 15px;
+    height: 4rem;
 
     &__form {
         display: flex;

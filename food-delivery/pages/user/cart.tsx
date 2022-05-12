@@ -1,6 +1,6 @@
 import { useUser } from '@auth0/nextjs-auth0';
 import { Field, FieldAttributes, FieldInputProps, FieldProps, Form, Formik } from 'formik';
-import React, { ReactElement, useEffect, useState } from 'react';
+import React, { ReactElement, useCallback, useEffect, useState } from 'react';
 import { BsPlusLg } from 'react-icons/bs';
 import { FaMinus } from 'react-icons/fa';
 import { MdClose } from 'react-icons/md';
@@ -12,12 +12,17 @@ import { store } from '../../store';
 import styles from '../../styles/Cart.module.scss'
 import userApi from '../api/userApi';
 import * as Yup from 'yup'
+import OrderBox from '../../components/popUp/orderBox';
 
 function Cart() {
     const [dateNow, setDateNow] = useState<string>('')
     const orders = useAppSelector(state => state.order.current)
     const foods = useAppSelector(state => state.food.current)
+    const [showPopUp, setShowPopUp] = useState<boolean>(false)
     const { user } = useUser()
+    const handleChangeShowPopUpOrder = useCallback(() => {
+        setShowPopUp(!showPopUp)
+    }, [showPopUp])
     const initialValue = {
         paymentMethod: 'visa',
         name: '',
@@ -115,6 +120,13 @@ function Cart() {
 
     return (
         <div className={styles.container}>
+            {showPopUp &&
+                <OrderBox
+                    showPopUp={showPopUp}
+                    onShow={handleChangeShowPopUpOrder}
+                    orderConfirm={'test'}
+                ></OrderBox>
+            }
             <div className={styles.shoppingCart}>
                 <p className={styles.shoppingCart__title}>Shopping Cart</p>
                 <ul className={styles.shoppingCart__list}>
@@ -157,6 +169,7 @@ function Cart() {
                     validationSchema={validateSchema}
                     onSubmit={value => {
                         console.log(value)
+                        setShowPopUp(true)
                     }}
                 >
                     {formikProps => {

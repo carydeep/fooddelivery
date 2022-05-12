@@ -9,7 +9,7 @@ import { useUser } from '@auth0/nextjs-auth0';
 import { BiCategory, BiDownload, BiMap } from 'react-icons/bi'
 import { MdDeliveryDining, MdOutlineShoppingBag } from 'react-icons/md'
 import { GoSettings } from 'react-icons/go'
-import { BsInboxes, BsPlusLg, BsSearch } from 'react-icons/bs'
+import { BsInboxes, BsSearch } from 'react-icons/bs'
 import { IoMdNotificationsOutline } from 'react-icons/io'
 import { IoLogOutOutline } from 'react-icons/io5'
 import { AiOutlineHome } from 'react-icons/ai'
