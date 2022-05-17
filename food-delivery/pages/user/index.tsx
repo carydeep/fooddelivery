@@ -15,10 +15,8 @@ import userApi from '../api/userApi';
 import LayoutUser from '../../layouts/layoutUser';
 
 function User({ categories }: { categories: Array<Categories> }) {
-    const { user } = useUser()
     const [selectedCategory, setSelectedCategory] = useState<number>(0)
     const [promote, setPromote] = useState<Array<Food>>([])
-    const orders = useAppSelector(state => state.order.current)
     const foods = useAppSelector(state => state.food.current)
     useEffect(() => {
         const updateFood = async () => {
@@ -26,14 +24,6 @@ function User({ categories }: { categories: Array<Categories> }) {
         }
         updateFood()
     }, [])
-    useEffect(() => {
-        const updateOrder = async () => {
-            if (user?.sub) {
-                await store.dispatch(getOrders(user.sub))
-            }
-        }
-        updateOrder()
-    }, [user])
 
     useEffect(() => {
         const filterHotTrend = () => {
@@ -44,19 +34,6 @@ function User({ categories }: { categories: Array<Categories> }) {
         }
         filterHotTrend()
     }, [foods])
-
-    const handleAddOrders = async (idFood: number) => {
-        const foodInfo = foods.find(food => food.id === idFood)
-        if (foodInfo && user?.sub) {
-            const actionAddOrder = ordersSlice.actions.add(foodInfo)
-            store.dispatch(actionAddOrder)
-            try {
-                await userApi.addOrder(store.getState().order.current, user.sub)
-            } catch (error) {
-                console.log('error:' + error)
-            }
-        }
-    }
 
     return (
         <div className={styles.main}>

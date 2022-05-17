@@ -1,4 +1,4 @@
-import { AxiosRequestConfig, AxiosResponse } from "axios";
+import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { OrderItem, OrderUser } from "../../models";
 import { card } from "../../models/user";
 import axiosUser from "./axiosUser";
@@ -7,6 +7,18 @@ const userApi = {
     getUserInfo: (userId: any) => {
         const url = `/api/v2/users/${userId}`
         return axiosUser.get(url)
+    },
+    updateUserInfo: (userId: any, profile: any) => {
+        const url = `/api/v2/users/${userId}`
+        const body = {
+            "user_metadata": {
+                'name': profile.name,
+                "address": profile.address,
+                "phoneNumber": profile.phoneNumber,
+                "instagram": profile.instagram
+            }
+        }
+        return axiosUser.patch(url, body)
     },
     postCard: (userId: any, data1: card) => {
         const url = `/api/v2/users/${userId}`;

@@ -1,15 +1,13 @@
-import { useUser, withPageAuthRequired } from '@auth0/nextjs-auth0';
+import { useUser } from '@auth0/nextjs-auth0';
 import { motion } from 'framer-motion';
-import { GetServerSideProps, NextPage } from 'next';
-import React, { useCallback, useEffect, useState } from 'react';
-import { BsPlusLg } from 'react-icons/bs';
+import React, { useEffect, useState } from 'react';
 import { useAppSelector } from '../hooks';
-import { Categories, Food, OrderUser } from '../models';
-import axiosUser from '../pages/api/axiosUser';
+import { Categories, Food } from '../models';
 import userApi from '../pages/api/userApi';
 import { ordersSlice } from '../slices/ordersSlice';
 import { store } from '../store';
 import styles from '../styles/ListFood.module.scss'
+import CardFood from './Card/food';
 
 interface Props {
     categories: Array<Categories>,
@@ -22,18 +20,7 @@ function ListFood(props: Props) {
     const { categories, selectedCategory, height } = props
     const [showCategory, setShowCategory] = useState<number>(selectedCategory)
     const [listFoods, setListFoods] = useState<Array<Food>>([])
-    const [orders, setOrders] = useState<OrderUser>()
     const foods = useAppSelector(state => state.food.current)
-
-    useEffect(() => {
-        const fetchorder = async () => {
-            if (user) {
-                const resOrder = await userApi.getUserInfo(user.sub)
-                resOrder.data.user_metadata?.orders && setOrders(resOrder.data.user_metadata?.orders)
-            }
-        }
-        fetchorder()
-    }, [])
 
     useEffect(() => {
         setShowCategory(selectedCategory)
@@ -81,26 +68,11 @@ function ListFood(props: Props) {
             <motion.div layout className={styles.listItems__content} style={{ height: `${height}px` }}>
                 {listFoods.map(food => {
                     return (
-                        <motion.div layout className={styles.listItems__content__item} key={food.id}>
-                            {food.trend === 'best-seller' &&
-                                <div className={styles.listItems__content__item__trend}>
-                                    <img className={styles.listItems__content__item__trend__img} src="flame.png" />
-                                </div>}
-                            {food.trend === 'best-vote' &&
-                                <div className={styles.listItems__content__item__trend}>
-                                    <img className={styles.listItems__content__item__trend__img} src="heart.png" />
-                                </div>}
-                            <img className={styles.listItems__content__item__img} src={food.image} />
-                            <div className={styles.listItems__content__item__name}>{food.name}</div>
-                            <div className={styles.listItems__content__item__descript}>{food.description}</div>
-                            <div className={styles.listItems__content__item__info}>
-                                <div className={styles.listItems__content__item__info__food}>
-                                    <div className={styles.listItems__content__item__info__food__price}>${food.price}</div>
-                                    <div className={styles.listItems__content__item__info__food__weight}>{food.weight}g</div>
-                                </div>
-                                <button type='button' className={styles.listItems__content__item__info__button} onClick={() => handleAddOrders(food.id)} ><BsPlusLg /></button>
-                            </div>
-                        </motion.div>
+                        <CardFood
+                            key={food.id}
+                            food={food}
+                            handleAddOrders={handleAddOrders}
+                        />
                     )
                 })}
             </motion.div>

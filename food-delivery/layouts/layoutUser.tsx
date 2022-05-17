@@ -1,10 +1,10 @@
-import React, { ReactNode, useCallback, useState } from 'react';
+import React, { memo, ReactNode, useCallback, useEffect, useState } from 'react';
 import styles from '../styles/LayoutUser.module.scss'
 import PopUpShoppingCart from '../components/popUp/shoppingCart';
 import { useAppSelector } from '../hooks';
 import { store } from '../store';
 import userApi from '../pages/api/userApi';
-import { ordersSlice } from '../slices/ordersSlice';
+import { getOrders, ordersSlice } from '../slices/ordersSlice';
 import { useUser } from '@auth0/nextjs-auth0';
 import { BiCategory, BiDownload, BiMap } from 'react-icons/bi'
 import { MdDeliveryDining, MdOutlineShoppingBag } from 'react-icons/md'
@@ -14,12 +14,31 @@ import { IoMdNotificationsOutline } from 'react-icons/io'
 import { IoLogOutOutline } from 'react-icons/io5'
 import { AiOutlineHome } from 'react-icons/ai'
 import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { getUser } from '../slices/userSlice';
 
 function LayoutUser({ children }: { children: ReactNode }) {
     const { user } = useUser()
+    const router = useRouter()
     const [showShoppingCart, setShowShoppingCart] = useState<boolean>(false)
     const orders = useAppSelector(state => state.order.current)
     const foods = useAppSelector(state => state.food.current)
+    const userInfo = useAppSelector(state => state.userInfo.current.user_metadata)
+
+    useEffect(() => {
+        const updateOrder = async () => {
+            if (user?.sub) {
+                await store.dispatch(getOrders(user.sub))
+            }
+        }
+        const updateUser = async () => {
+            if (user?.sub) {
+                await store.dispatch(getUser(user.sub))
+            }
+        }
+        updateOrder()
+        updateUser()
+    }, [user])
 
     const handeChangeShowShoppingCart = useCallback(() => {
         setShowShoppingCart(!showShoppingCart)
@@ -49,15 +68,17 @@ function LayoutUser({ children }: { children: ReactNode }) {
             )}
             <div className={styles.function}>
                 <img className={styles.function__image} src={user?.picture || undefined} />
-                <h3 className={styles.function__name}>{user?.name}</h3>
+                <h3 className={styles.function__name}>{userInfo?.name || user?.name}</h3>
                 <ul className={styles.function__option}>
-                    <li className={`${styles.function__option__item} ${styles.active}`}>
+                    <li className={`${styles.function__option__item} ${router.asPath === '/user' && styles.active}`}>
                         <Link href={`/user`}>
                             <a><AiOutlineHome className={styles.function__option__item__icon} />Home</a>
                         </Link>
                     </li>
-                    <li className={styles.function__option__item}>
-                        <BsInboxes className={styles.function__option__item__icon} />Catalog
+                    <li className={`${styles.function__option__item} ${router.asPath === '/user/catalog' && styles.active}`}>
+                        <Link href={`/user/catalog`}>
+                            <a><BsInboxes className={styles.function__option__item__icon} />Catalog</a>
+                        </Link>
                     </li>
                     <li className={styles.function__option__item}>
                         <BiCategory className={styles.function__option__item__icon} />Category
@@ -72,7 +93,7 @@ function LayoutUser({ children }: { children: ReactNode }) {
                         <GoSettings className={styles.function__option__item__icon} />Setting
                     </li>
                 </ul>
-                <img src='advertise-app.png' className={styles.function__advertise}></img>
+                <img src='../advertise-app.png' className={styles.function__advertise}></img>
                 <div className={styles.function__download}><BiDownload className={styles.function__download__icon} />Mobile App</div>
             </div>
             <div className={styles.content}>
@@ -80,7 +101,7 @@ function LayoutUser({ children }: { children: ReactNode }) {
                     <form className={styles.header__form} >
                         <input list='listFood' className={styles.header__form__input} type="text" placeholder='Search...' />
                         <datalist id='listFood'>
-                            {foods.map(food => {
+                            {foods && foods.map(food => {
                                 return (
                                     <option key={food.id} value={food.name}></option>
                                 )
@@ -105,4 +126,4 @@ function LayoutUser({ children }: { children: ReactNode }) {
     );
 }
 
-export default LayoutUser;
+export default memo(LayoutUser);

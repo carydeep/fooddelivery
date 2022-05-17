@@ -5,11 +5,13 @@ import {
 } from '@reduxjs/toolkit';
 import foodReducer from './slices/foodSlice';
 import orderReducer from './slices/ordersSlice';
+import userReducer from './slices/userSlice';
 
 export const store = configureStore({
     reducer: {
         order: orderReducer,
-        food: foodReducer
+        food: foodReducer,
+        userInfo: userReducer
         // This is where we add reducers.
         // Since we don't have any yet, leave this empty
     },

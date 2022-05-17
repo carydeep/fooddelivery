@@ -51,14 +51,7 @@ function Cart() {
         getDateNow()
         updateFood()
     }, [])
-    useEffect(() => {
-        const updateOrder = async () => {
-            if (user?.sub) {
-                await store.dispatch(getOrders(user.sub))
-            }
-        }
-        updateOrder()
-    }, [user])
+
 
     const cardNumberFormat = (value: string) => {
         const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '')

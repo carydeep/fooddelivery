@@ -1,0 +1,86 @@
+.profile{
+    display: flex;
+    color: white;
+    align-items: center;
+
+    .img{
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        margin-right: 40px;
+    }
+
+    .info{
+        flex: 1;
+
+        .top{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            .button{
+                color: white;
+                padding: 10px 20px;
+                border-radius: 30px;
+                background-color: var(--green-light);
+                display: flex;
+                align-items: center;
+
+                .icon{
+                    font-size: medium;
+                }
+            }
+        }
+
+        .mid{
+            color: var(--color-descript);
+            font-size: small;
+        }
+
+        .bottom{
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+
+            .card{
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 10px 40px;
+                border-radius: 15px;
+                min-width: 300px;
+                background-color: var(--color-card);
+
+                .icon{
+                    font-size: 15px;
+                    margin-right: 10px;
+
+                    &.phone{
+                        color: rgb(55, 255, 55);
+                    }
+
+                    &.email{
+                        color: rgb(255, 37, 37);
+                    }
+
+                    &.insta{
+                        color: rgb(0, 106, 255);
+                    }
+                }
+            }
+        }
+    }
+}
+
+.chartContainer{
+    position: relative;
+    background-color: var(--color-card);
+        padding: 20px;
+        border-radius: 50px;
+        height: 250px;
+        margin-top: 30px;
+
+    .chart{
+        height: 100px;
+    }
+}
