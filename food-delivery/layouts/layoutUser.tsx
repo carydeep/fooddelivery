@@ -16,6 +16,7 @@ import { AiOutlineHome } from 'react-icons/ai'
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { getUser } from '../slices/userSlice';
+import { getFoods } from '../slices/foodSlice';
 
 function LayoutUser({ children }: { children: ReactNode }) {
     const { user } = useUser()
@@ -36,8 +37,14 @@ function LayoutUser({ children }: { children: ReactNode }) {
                 await store.dispatch(getUser(user.sub))
             }
         }
+        const updateFood = async () => {
+            if (user?.sub) {
+                await store.dispatch(getFoods())
+            }
+        }
         updateOrder()
         updateUser()
+        updateFood()
     }, [user])
 
     const handeChangeShowShoppingCart = useCallback(() => {

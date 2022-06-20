@@ -14,11 +14,26 @@ import userApi from '../api/userApi';
 import * as Yup from 'yup'
 import OrderBox from '../../components/popUp/orderBox';
 
+export interface Payment {
+    paymentMethod: string,
+    name: string,
+    cardNumber: string,
+    expireDate: string,
+    cvv: string
+}
+
 function Cart() {
     const [dateNow, setDateNow] = useState<string>('')
     const orders = useAppSelector(state => state.order.current)
     const foods = useAppSelector(state => state.food.current)
     const [showPopUp, setShowPopUp] = useState<boolean>(false)
+    const [payment, setPayment] = useState<Payment>({
+        paymentMethod: 'visa',
+        name: '',
+        cardNumber: '',
+        expireDate: '',
+        cvv: ''
+    })
     const { user } = useUser()
     const handleChangeShowPopUpOrder = useCallback(() => {
         setShowPopUp(!showPopUp)
@@ -110,20 +125,19 @@ function Cart() {
             }
         }
     }
-
     return (
         <div className={styles.container}>
             {showPopUp &&
                 <OrderBox
                     showPopUp={showPopUp}
                     onShow={handleChangeShowPopUpOrder}
-                    orderConfirm={'test'}
+                    orderConfirm={payment}
                 ></OrderBox>
             }
             <div className={styles.shoppingCart}>
                 <p className={styles.shoppingCart__title}>Shopping Cart</p>
                 <ul className={styles.shoppingCart__list}>
-                    {orders && orders.orderItems.map(order => {
+                    {orders && orders.orderItems && orders.orderItems.map(order => {
                         return (
                             <li className={styles.shoppingCart__item} key={order.id}>
                                 <img className={styles.shoppingCart__item__img} src={order.img} />
@@ -161,8 +175,8 @@ function Cart() {
                     initialValues={initialValue}
                     validationSchema={validateSchema}
                     onSubmit={value => {
-                        console.log(value)
                         setShowPopUp(true)
+                        setPayment(value)
                     }}
                 >
                     {formikProps => {

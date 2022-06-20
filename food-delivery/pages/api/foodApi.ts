@@ -13,6 +13,15 @@ const foodApi = {
     getFoodByCategory: (category: number): Promise<Array<Food>> => {
         const url = `/food?category=${category}`;
         return axiosClient.get(url);
+    },
+    addOrderDeliver: (name: string, phoneNumber: string, address: string) => {
+        const url = `/orderDeliver`;
+        const value = {
+            'name': name,
+            'phoneNumber': phoneNumber,
+            'address': address
+        }
+        return axiosClient.post(url, value)
     }
 }
 

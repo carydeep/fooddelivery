@@ -84,3 +84,85 @@
         height: 100px;
     }
 }
+
+.chartContainerSmall{
+    display: flex;
+    justify-content: space-around;
+
+    .static{
+    background-color: var(--color-card);
+        padding: 20px 30px;
+        border-radius: 50px;
+        height: 150px;
+        width: 350px;
+        margin-top: 30px;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        .title{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            .left{
+                display: flex;
+                align-items: center;
+
+                .icon{
+                    font-size: 30px;
+                    margin-right: 10px;
+
+                    &.drinks{
+                        color: rgb(27, 99, 255);
+                    }
+
+                    &.food{
+                        color: rgb(255, 57, 57);
+                    }
+
+                    &.sets{
+                        color: rgb(113, 255, 25);
+                    }
+                }
+
+            }
+
+            .drinks{
+                color: rgb(27, 99, 255);
+            }
+
+            .food{
+                color: rgb(255, 57, 57);
+            }
+
+            .sets{
+                color: rgb(113, 255, 25);
+            }
+        }
+
+        .bottom{
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+
+            .text{
+                color: var(--color-descript);
+                font-size: 15px;
+
+                .number{
+                    color: white;
+                }
+            }
+
+            .chart{
+                height: 20px;
+                position: relative;
+                height: 50px;
+            width: 200px;
+            }
+        }
+    }
+    
+}

@@ -10,3 +10,9 @@ export interface OrderUser {
     orderItems: Array<OrderItem>;
     totalAmount: number
 }
+
+export interface HistoryOrders {
+    "orderItems": Array<OrderItem>,
+    "createdAt": number,
+    "updatedAt": number
+}

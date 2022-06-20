@@ -92,7 +92,16 @@ export const ordersSlice = createSlice({
                     }
                 }
             }
-        }
+        },
+        deleteAll: (state) => {
+            if (!state.loading) {
+                if (state.current) {
+                    state.current.orderItems = []
+                    state.current.totalAmount = 0
+                }
+            }
+        },
+
     },
     extraReducers: (builder) => {
         builder.addCase(getOrders.pending, (state, action) => {

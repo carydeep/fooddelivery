@@ -2,15 +2,26 @@ import { Field, Form, Formik } from 'formik';
 import React, { memo, useEffect, useRef } from 'react';
 import styles from '../../styles/PopUpOrderBox.module.scss'
 import * as Yup from 'yup'
+import { Payment } from '../../pages/user/cart';
+import { useAppSelector } from '../../hooks';
+import userApi from '../../pages/api/userApi';
+import { useUser } from '@auth0/nextjs-auth0';
+import foodApi from '../../pages/api/foodApi';
+import { ordersSlice } from '../../slices/ordersSlice';
+import { store } from '../../store';
+import { userSlice } from '../../slices/userSlice';
 
 interface Props {
-    orderConfirm: any,
+    orderConfirm: Payment,
     showPopUp: boolean,
     onShow: Function,
 }
 
 function OrderBox(props: Props) {
     const { onShow, orderConfirm, showPopUp } = props
+    const { user } = useUser()
+    const orders = useAppSelector(state => state.order.current)
+    const userInfo = useAppSelector(state => state.userInfo.current.user_metadata)
     const ref = useRef<HTMLDivElement>(null)
     const initialValueToOrder = {
         address: '',
@@ -47,8 +58,24 @@ function OrderBox(props: Props) {
                 <Formik
                     initialValues={initialValueToOrder}
                     validationSchema={validateOrderShema}
-                    onSubmit={value => {
-                        console.log(value)
+                    onSubmit={async (value) => {
+                        if (!orders) return
+                        const { name } = orderConfirm
+                        const { phoneNumber, address } = value
+                        const historyOrder = {
+                            "orderItems": orders.orderItems,
+                            "createdAt": Date.now(),
+                            "updatedAt": Date.now()
+                        }
+                        if (user?.sub) {
+                            const actionAddHistoryOrder = userSlice.actions.addHistoryOrder(historyOrder)
+                            store.dispatch(actionAddHistoryOrder)
+                            await userApi.addHistoryOrders(store.getState().userInfo.current.user_metadata.historyOrders, user.sub)
+                            await foodApi.addOrderDeliver(name, phoneNumber, address)
+                            const actionDeleteAll = ordersSlice.actions.deleteAll()
+                            store.dispatch(actionDeleteAll)
+                            await userApi.removeOrder(store.getState().order.current, user.sub).then(onShow())
+                        }
                     }}
                 >
                     {formikProps => {

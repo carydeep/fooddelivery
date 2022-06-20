@@ -1,9 +1,8 @@
 import { useUser } from '@auth0/nextjs-auth0';
 import React, { ReactElement, useCallback, useEffect, useState } from 'react';
 import LayoutUser from '../../layouts/layoutUser';
-import userApi from '../api/userApi';
 import styles from '../../styles/Catalog.module.scss'
-import { BsTelephone } from 'react-icons/bs';
+import { BsCupStraw, BsTelephone } from 'react-icons/bs';
 import { SiInstagram } from 'react-icons/si'
 import { FiMail } from 'react-icons/fi'
 import { BiPencil } from 'react-icons/bi'
@@ -11,6 +10,8 @@ import EditProfile from '../../components/popUp/editProfile';
 import { store } from '../../store';
 import { getOrders } from '../../slices/ordersSlice';
 import { useAppSelector } from '../../hooks';
+import { GiHamburger } from 'react-icons/gi'
+import { IoFastFood } from 'react-icons/io5'
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -23,7 +24,8 @@ import {
     Filler,
     ArcElement,
 } from 'chart.js';
-import { Line, Pie } from 'react-chartjs-2';
+import { Line } from 'react-chartjs-2';
+import { HistoryOrders } from '../../models';
 
 ChartJS.register(
     CategoryScale,
@@ -40,7 +42,15 @@ ChartJS.register(
 
 function Catalog() {
     const { user } = useUser()
+    const [orderSet, setOrderSet] = useState<Array<number>>([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+    const [orderFood, setOrderFood] = useState<Array<number>>([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+    const [orderDrink, setOrderDrink] = useState<Array<number>>([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+    const [staticDrink, setStaticDrink] = useState<any>()
+    const [staticFood, setStaticFood] = useState<any>()
+    const [staticSets, setStaticSets] = useState<any>()
     const [showPopUp, setShowPopUp] = useState<boolean>(false)
+    const thisMonth = new Date().getMonth()
+    const foods = useAppSelector(state => state.food.current)
     const userInfo = useAppSelector(state => state.userInfo.current.user_metadata)
     const handleChangeShowPopUp = useCallback(() => {
         setShowPopUp(!showPopUp)
@@ -53,6 +63,63 @@ function Catalog() {
         }
         updateOrder()
     }, [user])
+
+    useEffect(() => {
+        const countOrderByMonth = () => {
+            if (!userInfo) return
+            if (!userInfo.historyOrders) return
+            if (foods.length === 0) return
+            let countSet = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            let countFood = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            let countDrink = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            userInfo.historyOrders.map((item: HistoryOrders) => {
+                const getMonth = new Date(item.createdAt).getMonth()
+                item.orderItems.map(order => {
+                    if (foods[order.id - 1].category != 4) {
+                        countFood[getMonth] += 1
+                    } else {
+                        countDrink[getMonth] += 1
+                    }
+                })
+                if (item.orderItems.length > 1) {
+                    countSet[getMonth] += 1
+                }
+            })
+            setOrderDrink(countDrink)
+            setOrderFood(countFood)
+            setOrderSet(countSet)
+        }
+        countOrderByMonth()
+
+    }, [userInfo, foods])
+
+    useEffect(() => {
+        setStaticDrink(caculateOrder(orderDrink))
+        setStaticFood(caculateOrder(orderFood))
+        setStaticSets(caculateOrder(orderSet))
+    }, [orderDrink, orderFood, orderSet])
+
+    const caculateOrder = (orderByMonth: Array<number>) => {
+        let rateCompare = 0
+        const orders = orderByMonth.reduce((total, num) => total + num, 0)
+        if (orderByMonth[thisMonth] > orderByMonth[thisMonth - 1]) {
+            if (orderByMonth[thisMonth - 1] > 0) {
+                rateCompare = (orderByMonth[thisMonth] / orderByMonth[thisMonth - 1]) * 100
+            } else {
+                rateCompare = 999
+            }
+        } else {
+            if (orderByMonth[thisMonth] > 0) {
+                rateCompare = (orderByMonth[thisMonth - 1] / orderByMonth[thisMonth]) * -100
+            } else {
+                rateCompare = -999
+            }
+        }
+        return {
+            'orders': orders,
+            'rateCompare': rateCompare
+        }
+    }
 
     const options = {
         responsive: true,
@@ -105,17 +172,17 @@ function Catalog() {
         }
     };
 
-    const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+    const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
     const data = {
         labels,
         datasets: [
             {
-                label: 'Dataset 1',
+                label: 'Order Set',
                 fill: true,
-                data: [0, 2, 4, 5, 5, 3, 7],
-                borderColor: 'rgb(255, 99, 132)',
-                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                data: orderSet,
+                borderColor: 'rgb(113, 255, 25)',
+                backgroundColor: 'rgba(113, 255, 25,0.2)',
                 cubicInterpolationMode: 'monotone' as const,
                 borderWidth: 3,
                 pointStyle: 'circle',
@@ -123,12 +190,24 @@ function Catalog() {
                 pointBorderColor: 'white'
             },
             {
-                label: 'Dataset 2',
-                data: [0, 150, 30, 60],
-                borderColor: 'rgb(53, 162, 235)',
-                backgroundColor: 'rgba(53, 162, 235, 0.2)',
-                cubicInterpolationMode: 'monotone' as const,
+                label: 'Order Food',
                 fill: true,
+                data: orderFood,
+                borderColor: 'rgb(255, 57, 57)',
+                backgroundColor: 'rgba(255, 57, 57,0.2)',
+                cubicInterpolationMode: 'monotone' as const,
+                borderWidth: 3,
+                pointStyle: 'circle',
+                pointRadius: 5,
+                pointBorderColor: 'white'
+            },
+            {
+                label: 'Order Drink',
+                fill: true,
+                data: orderDrink,
+                borderColor: 'rgb(27, 99, 255)',
+                backgroundColor: 'rgba(27, 99, 255,0.2)',
+                cubicInterpolationMode: 'monotone' as const,
                 borderWidth: 3,
                 pointStyle: 'circle',
                 pointRadius: 5,
@@ -136,6 +215,79 @@ function Catalog() {
             },
         ],
     };
+
+    const optionsSmallChart = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            title: {
+                display: false,
+            },
+            legend: {
+                labels: {
+                    usePointStyle: true
+                },
+                align: 'start' as const,
+                display: false
+            }
+        },
+        scales: {
+            y: {
+                display: false,
+            },
+            x: {
+                display: false,
+            }
+        }
+    };
+
+    const dataDrinks = {
+        labels,
+        datasets: [
+            {
+                label: 'Order Set',
+                data: orderDrink,
+                borderColor: 'rgb(27, 99, 255)',
+                cubicInterpolationMode: 'monotone' as const,
+                borderWidth: 2,
+                pointStyle: 'none',
+                pointRadius: 0,
+                pointBorderColor: 'white'
+            }
+        ]
+    }
+
+    const dataFood = {
+        labels,
+        datasets: [
+            {
+                label: 'Order Set',
+                data: orderFood,
+                borderColor: 'rgb(255, 57, 57)',
+                cubicInterpolationMode: 'monotone' as const,
+                borderWidth: 2,
+                pointStyle: 'none',
+                pointRadius: 0,
+                pointBorderColor: 'white'
+            }
+        ]
+    }
+
+    const dataSets = {
+        labels,
+        datasets: [
+            {
+                label: 'Order Set',
+                data: orderSet,
+                borderColor: 'rgb(113, 255, 25)',
+                cubicInterpolationMode: 'monotone' as const,
+                borderWidth: 2,
+                pointStyle: 'none',
+                pointRadius: 0,
+                pointBorderColor: 'white'
+            }
+        ]
+    }
 
 
     return (
@@ -164,7 +316,53 @@ function Catalog() {
             <div className={styles.chartContainer}>
                 <Line className={styles.chart} options={options} data={data} />;
             </div>
-
+            <div className={styles.chartContainerSmall}>
+                <div className={styles.static}>
+                    <div className={styles.title}>
+                        <div className={styles.left}>
+                            <BsCupStraw className={`${styles.icon} ${styles.drinks}`} />
+                            <p>THE DRINKS</p>
+                        </div>
+                        <p className={styles.drinks}>{staticDrink?.rateCompare}%</p>
+                    </div>
+                    <div className={styles.bottom}>
+                        <p className={styles.text}><h3 className={styles.number}>{staticDrink?.orders || 0}</h3> orders</p>
+                        <div className={styles.chart}>
+                            <Line options={optionsSmallChart} data={dataDrinks} />
+                        </div>
+                    </div>
+                </div>
+                <div className={styles.static}>
+                    <div className={styles.title}>
+                        <div className={styles.left}>
+                            <GiHamburger className={`${styles.icon} ${styles.food}`} />
+                            <p>FOOD</p>
+                        </div>
+                        <p className={styles.food}>{staticFood?.rateCompare}%</p>
+                    </div>
+                    <div className={styles.bottom}>
+                        <p className={styles.text}><h3 className={styles.number}>{staticFood?.orders || 0}</h3> orders</p>
+                        <div className={styles.chart}>
+                            <Line options={optionsSmallChart} data={dataFood} />
+                        </div>
+                    </div>
+                </div>
+                <div className={styles.static}>
+                    <div className={styles.title}>
+                        <div className={styles.left}>
+                            <IoFastFood className={`${styles.icon} ${styles.sets}`} />
+                            <p>SETS</p>
+                        </div>
+                        <p className={styles.sets}>{staticSets?.rateCompare}%</p>
+                    </div>
+                    <div className={styles.bottom}>
+                        <p className={styles.text}><h3 className={styles.number}>{staticSets?.orders || 0}</h3> orders</p>
+                        <div className={styles.chart}>
+                            <Line options={optionsSmallChart} data={dataSets} />
+                        </div>
+                    </div>
+                </div>
+            </div>
         </>
     );
 }

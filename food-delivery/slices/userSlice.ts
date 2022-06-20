@@ -1,5 +1,6 @@
 import { useUser } from '@auth0/nextjs-auth0'
 import { createAsyncThunk, createSlice, PayloadAction, SerializedError } from '@reduxjs/toolkit'
+import { HistoryOrders } from '../models'
 import userApi from '../pages/api/userApi'
 
 export const getUser = createAsyncThunk('user/getUser', async (userId: string) => {
@@ -33,6 +34,17 @@ export const userSlice = createSlice({
             current.address = address
             current.phoneNumber = phoneNumber
             current.instagram = instagram
+        },
+        addHistoryOrder: (state, action: PayloadAction<HistoryOrders>) => {
+            if (state.loading) return
+            if (state.current) {
+                if (state.current.user_metadata.historyOrders) {
+                    state.current.user_metadata.historyOrders.push(action.payload)
+                } else {
+                    state.current.user_metadata.historyOrders = [action.payload]
+                }
+
+            }
         }
     },
     extraReducers: (builder) => {

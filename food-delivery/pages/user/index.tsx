@@ -11,7 +11,6 @@ import { getOrders, ordersSlice } from '../../slices/ordersSlice';
 import { store } from '../../store';
 import { useAppSelector } from '../../hooks';
 import { getFoods } from '../../slices/foodSlice';
-import userApi from '../api/userApi';
 import LayoutUser from '../../layouts/layoutUser';
 
 function User({ categories }: { categories: Array<Categories> }) {
