@@ -12,13 +12,18 @@ import Link from 'next/link'
 import ListFood from '../components/listFood'
 import { store } from '../store'
 import { getFoods } from '../slices/foodSlice'
+import { useRouter } from 'next/router'
 
 const Home = ({ categories }: { foods: Array<Food>, categories: Array<Categories> }) => {
   const { user, error, isLoading } = useUser()
-
+  const router = useRouter()
   const [widthSlide, setWidthSlide] = useState<number>(0)
   const [showCategory, setShowCategory] = useState<number>(0)
   const slide = useRef<null | HTMLDivElement>(null)
+
+  useEffect(() => {
+    user && router.push('/user')
+  }, [user])
 
   useEffect(() => {
     const updateFood = async () => {
@@ -80,7 +85,7 @@ const Home = ({ categories }: { foods: Array<Food>, categories: Array<Categories
             <div className={styles.main__discount__number}>20%</div>
             <div className={styles.main__discount__discript}> DISCOUNT UPON <br /> REGISTRATION</div>
           </div>
-          <button className={styles.main__button}>REGISTER</button>
+          <Link href='/api/auth/login'><a className={styles.main__button}>REGISTER</a></Link>
         </div>
       </section>
       <section className={styles.section2}>
@@ -126,7 +131,7 @@ const Home = ({ categories }: { foods: Array<Food>, categories: Array<Categories
           <div className={styles.ourApp__content}>
             <div className={styles.ourApp__content__name}>Our application</div>
             <div className={styles.ourApp__content__descript}>Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni soluta beatae reiciendis omnis amet eos distinctio quasi id expedita culpa! Tempora </div>
-            <button className={styles.ourApp__content__button}>REGISTER</button>
+            <Link href='/api/auth/login'><a className={styles.ourApp__content__button}>REGISTER</a></Link>
           </div>
         </div>
       </section>
@@ -137,7 +142,7 @@ const Home = ({ categories }: { foods: Array<Food>, categories: Array<Categories
         </div>
         <form className={styles.register__form}>
           <input className={styles.register__form__input} type="email" placeholder='E-mail' />
-          <button className={styles.register__form__button} type='button'>REGISTER</button>
+          <Link href='/api/auth/login'><a className={styles.register__form__button}>REGISTER</a></Link>
         </form>
       </section>
       <section className={styles.footer}>
