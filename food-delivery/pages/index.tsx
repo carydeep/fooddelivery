@@ -1,42 +1,56 @@
-import type { GetServerSideProps, NextPage } from 'next'
-import Head from 'next/head'
-import styles from '../styles/Home.module.scss'
-import { FaTwitter, FaFacebookF, FaInstagram, FaChevronRight, FaAlignRight } from "react-icons/fa"
-import { useEffect, useRef, useState } from 'react'
-import foodApi from './api/foodApi'
-import { Categories, Food } from '../models'
-import { motion } from 'framer-motion'
-import { BsPlusLg, BsXLg } from 'react-icons/bs'
-import { useUser } from '@auth0/nextjs-auth0'
-import Link from 'next/link'
-import ListFood from '../components/listFood'
-import { store } from '../store'
-import { getFoods } from '../slices/foodSlice'
-import { useRouter } from 'next/router'
+import type { GetServerSideProps, NextPage } from "next";
+import Head from "next/head";
+import styles from "../styles/Home.module.scss";
+import {
+  FaTwitter,
+  FaFacebookF,
+  FaInstagram,
+  FaChevronRight,
+  FaAlignRight,
+} from "react-icons/fa";
+import { useEffect, useRef, useState } from "react";
+import foodApi from "./api/foodApi";
+import { Categories, Food } from "../models";
+import { motion } from "framer-motion";
+import { BsPlusLg, BsXLg } from "react-icons/bs";
+import { useUser } from "@auth0/nextjs-auth0";
+import Link from "next/link";
+import ListFood from "../components/listFood";
+import { store } from "../store";
+import { getFoods } from "../slices/foodSlice";
+import { useRouter } from "next/router";
 
-const Home = ({ categories }: { foods: Array<Food>, categories: Array<Categories> }) => {
-  const { user, error, isLoading } = useUser()
-  const router = useRouter()
-  const [widthSlide, setWidthSlide] = useState<number>(0)
-  const [showCategory, setShowCategory] = useState<number>(0)
-  const slide = useRef<null | HTMLDivElement>(null)
+const Home = ({
+  categories,
+}: {
+  foods: Array<Food>;
+  categories: Array<Categories>;
+}) => {
+  const { user, error, isLoading } = useUser();
+  const router = useRouter();
+  const [widthSlide, setWidthSlide] = useState<number>(0);
+  const [showCategory, setShowCategory] = useState<number>(0);
+  const slide = useRef<null | HTMLDivElement>(null);
 
   useEffect(() => {
-    user && router.push('/user')
-  }, [user])
+    user && router.push("/user");
+  }, [user]);
 
   useEffect(() => {
     const updateFood = async () => {
-      await store.dispatch(getFoods())
-    }
-    updateFood()
-  }, [])
+      await store.dispatch(getFoods());
+    };
+    updateFood();
+  }, []);
 
   useEffect(() => {
-    if (slide.current?.scrollWidth != undefined && slide.current?.offsetWidth != undefined) {
-      setWidthSlide(slide.current?.scrollWidth - slide.current?.offsetWidth)
+    if (
+      slide.current?.scrollWidth != undefined &&
+      slide.current?.offsetWidth != undefined
+    ) {
+      setWidthSlide(slide.current?.scrollWidth - slide.current?.offsetWidth);
     }
-  }, [categories])
+  }, [categories]);
   return (
     <div className={styles.container}>
       <Head>
@@ -45,7 +59,10 @@ const Home = ({ categories }: { foods: Array<Food>, categories: Array<Categories
         <link rel="icon" href="/favicon.ico" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" />
-        <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap"
+          rel="stylesheet"
+        />
       </Head>
 
       <section className={styles.section1}>
@@ -55,37 +72,56 @@ const Home = ({ categories }: { foods: Array<Food>, categories: Array<Categories
           <FaInstagram />
         </div>
         <div className={styles.header}>
-          <div className={styles.header__left}>
-            My Food
-          </div>
-          <input className={styles.header__input} type='checkbox' id='showBar' />
-          <label className={styles.header__bar} htmlFor="showBar"><FaAlignRight /></label>
+          <div className={styles.header__left}>My Food</div>
+          <input
+            className={styles.header__input}
+            type="checkbox"
+            id="showBar"
+          />
+          <label className={styles.header__bar} htmlFor="showBar">
+            <FaAlignRight />
+          </label>
           <div className={styles.header__right}>
             <ul className={styles.header__right__funct}>
-              <label className={styles.header__right__funct__close} htmlFor="showBar"><BsXLg /></label>
+              <label
+                className={styles.header__right__funct__close}
+                htmlFor="showBar"
+              >
+                <BsXLg />
+              </label>
               <li className={styles.header__right__funct__item}>Home</li>
               <li className={styles.header__right__funct__item}>Catagory</li>
               <li className={styles.header__right__funct__item}>Catalog</li>
               <li className={styles.header__right__funct__item}>About Us</li>
               <li className={styles.header__right__funct__item}>Reviews</li>
             </ul>
-            {user ?
-              (
-                <Link href='/api/auth/logout'><a className={styles.header__right__register}>LOGOUT</a></Link>
-              ) : (
-                <Link href='/api/auth/login'><a className={styles.header__right__register}>REGISTER</a></Link>
-              )}
+            {user ? (
+              <Link href="/api/auth/logout">
+                <a className={styles.header__right__register}>LOGOUT</a>
+              </Link>
+            ) : (
+              <Link href="/api/auth/login">
+                <a className={styles.header__right__register}>REGISTER</a>
+              </Link>
+            )}
           </div>
         </div>
         <div className={styles.main}>
-          <div className={styles.main__decript}>THE BEST CUISINE AWAITS YOU</div>
+          <div className={styles.main__decript}>
+            THE BEST CUISINE AWAITS YOU
+          </div>
           <div className={styles.main__welcome}>Welcome!</div>
           <div className={styles.main__myfood}>To my food</div>
           <div className={styles.main__discount}>
             <div className={styles.main__discount__number}>20%</div>
-            <div className={styles.main__discount__discript}> DISCOUNT UPON <br /> REGISTRATION</div>
+            <div className={styles.main__discount__discript}>
+              {" "}
+              DISCOUNT UPON <br /> REGISTRATION
+            </div>
           </div>
-          <Link href='/api/auth/login'><a className={styles.main__button}>REGISTER</a></Link>
+          <Link href="/api/auth/login">
+            <a className={styles.main__button}>REGISTER</a>
+          </Link>
         </div>
       </section>
       <section className={styles.section2}>
@@ -97,22 +133,43 @@ const Home = ({ categories }: { foods: Array<Food>, categories: Array<Categories
           <motion.div
             drag="x"
             dragConstraints={{ right: 0, left: -widthSlide }}
-            className={styles.innerSlideCatagory}>
-            {categories?.map(category => {
+            className={styles.innerSlideCatagory}
+          >
+            {categories?.map((category) => {
               return (
-                <motion.div className={styles.innerSlideCatagory__item} key={category.id}>
-                  <img className={styles.innerSlideCatagory__item__img} src={category.image} />
+                <motion.div
+                  className={styles.innerSlideCatagory__item}
+                  key={category.id}
+                >
+                  <img
+                    className={styles.innerSlideCatagory__item__img}
+                    src={category.image}
+                  />
                   <div className={styles.innerSlideCatagory__item__content}>
-                    <div className={styles.innerSlideCatagory__item__content__name}>{category.name}</div>
-                    <div className={styles.innerSlideCatagory__item__content__descript}>{category.description}</div>
+                    <div
+                      className={styles.innerSlideCatagory__item__content__name}
+                    >
+                      {category.name}
+                    </div>
+                    <div
+                      className={
+                        styles.innerSlideCatagory__item__content__descript
+                      }
+                    >
+                      {category.description}
+                    </div>
                   </div>
                   <button
-                    type='button'
+                    type="button"
                     className={styles.innerSlideCatagory__item__button}
-                    onClick={() => { setShowCategory(category.id) }}
-                  ><FaChevronRight /></button>
+                    onClick={() => {
+                      setShowCategory(category.id);
+                    }}
+                  >
+                    <FaChevronRight />
+                  </button>
                 </motion.div>
-              )
+              );
             })}
           </motion.div>
         </motion.div>
@@ -130,8 +187,14 @@ const Home = ({ categories }: { foods: Array<Food>, categories: Array<Categories
           <img className={styles.ourApp__image} src="our-application.PNG" />
           <div className={styles.ourApp__content}>
             <div className={styles.ourApp__content__name}>Our application</div>
-            <div className={styles.ourApp__content__descript}>Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni soluta beatae reiciendis omnis amet eos distinctio quasi id expedita culpa! Tempora </div>
-            <Link href='/api/auth/login'><a className={styles.ourApp__content__button}>REGISTER</a></Link>
+            <div className={styles.ourApp__content__descript}>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni
+              soluta beatae reiciendis omnis amet eos distinctio quasi id
+              expedita culpa! Tempora{" "}
+            </div>
+            <Link href="/api/auth/login">
+              <a className={styles.ourApp__content__button}>REGISTER</a>
+            </Link>
           </div>
         </div>
       </section>
@@ -141,8 +204,14 @@ const Home = ({ categories }: { foods: Array<Food>, categories: Array<Categories
           <div className={styles.register__title__news}>TO NEWS</div>
         </div>
         <form className={styles.register__form}>
-          <input className={styles.register__form__input} type="email" placeholder='E-mail' />
-          <Link href='/api/auth/login'><a className={styles.register__form__button}>REGISTER</a></Link>
+          <input
+            className={styles.register__form__input}
+            type="email"
+            placeholder="E-mail"
+          />
+          <Link href="/api/auth/login">
+            <a className={styles.register__form__button}>REGISTER</a>
+          </Link>
         </form>
       </section>
       <section className={styles.footer}>
@@ -155,22 +224,28 @@ const Home = ({ categories }: { foods: Array<Food>, categories: Array<Categories
           <li className={styles.footer__option__item}>Reviews</li>
         </ul>
         <ul className={styles.footer__contact}>
-          <li><FaTwitter /></li>
-          <li><FaInstagram /></li>
-          <li><FaFacebookF /></li>
+          <li>
+            <FaTwitter />
+          </li>
+          <li>
+            <FaInstagram />
+          </li>
+          <li>
+            <FaFacebookF />
+          </li>
         </ul>
       </section>
     </div>
-  )
-}
+  );
+};
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const resCategories = await foodApi.getCategories()
+  const resCategories = await foodApi.getCategories();
   return {
     props: {
-      categories: resCategories
-    }
-  }
-}
+      categories: resCategories,
+    },
+  };
+};
 
-export default Home
+export default Home;
