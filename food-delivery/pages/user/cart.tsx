@@ -120,6 +120,7 @@ function Cart() {
       store.dispatch(actionAddOrder);
       try {
         await userApi.addOrder(store.getState().order.current, user.sub);
+        await userApi.backupOrder(user.sub, store.getState().order.current);
       } catch (error) {
         console.log("error:" + error);
       }
@@ -133,6 +134,7 @@ function Cart() {
       store.dispatch(actionRemoveOrder);
       try {
         await userApi.removeOrder(store.getState().order.current, user.sub);
+        await userApi.backupOrder(user.sub, store.getState().order.current);
       } catch (error) {
         console.log(error);
       }
@@ -146,6 +148,7 @@ function Cart() {
       store.dispatch(actionDeleteOrder);
       try {
         await userApi.removeOrder(store.getState().order.current, user.sub);
+        await userApi.backupOrder(user.sub, store.getState().order.current);
       } catch (error) {
         console.log(error);
       }

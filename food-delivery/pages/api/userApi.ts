@@ -1,6 +1,7 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { HistoryOrders, OrderItem, OrderUser } from "../../models";
 import { card } from "../../models/user";
+import axiosBackup from "./axiosBackup";
 import axiosUser from "./axiosUser";
 
 const userApi = {
@@ -72,6 +73,14 @@ const userApi = {
         }
         return axiosUser.patch(url, body)
     },
+    backupOrder:(userID:string,order:any)=>{
+        const url = `/api/order`
+        const body={
+            userID,
+            order
+        }
+        return axiosBackup.post(url,body)
+    }
 }
 
 export default userApi;
