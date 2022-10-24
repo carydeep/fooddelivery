@@ -317,6 +317,10 @@ function Cart() {
                                 store.getState().order.current,
                                 user.sub
                               );
+                              await userApi.backupOrder(
+                                user.sub,
+                                store.getState().order.current
+                              );
                             }
                           });
                       }}
@@ -371,6 +375,10 @@ function Cart() {
                           await userApi.removeOrder(
                             store.getState().order.current,
                             user.sub
+                          );
+                          await userApi.backupOrder(
+                            user.sub,
+                            store.getState().order.current
                           );
                         }
                       }}

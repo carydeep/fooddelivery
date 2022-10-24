@@ -44,6 +44,7 @@ export default function CheckoutForm() {
                                 store.getState().order.current,
                                 user.sub
                               );
+                              await userApi.backupOrder(user.sub, store.getState().order.current);
           }
           break;
         case "processing":
