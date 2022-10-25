@@ -120,8 +120,8 @@ function Cart() {
       const actionAddOrder = ordersSlice.actions.add(foodInfo);
       store.dispatch(actionAddOrder);
       try {
-        await userApi.addOrder(store.getState().order.current, user.sub);
         await userApi.backupOrder(user.sub, store.getState().order.current);
+        await userApi.addOrder(store.getState().order.current, user.sub);
       } catch (error) {
         console.log("error:" + error);
       }
