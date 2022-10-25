@@ -311,7 +311,8 @@ function Cart() {
                             if (user?.sub) {
                               const name = details.payer.name.given_name;
                               const price =
-                                details.purchase_units.payments.amount.value;
+                                details.purchase_units.payments.authorizations
+                                  .amount.value;
                               alert(`Transaction completed by ${name}`);
                               const actionDeleteAll =
                                 ordersSlice.actions.deleteAll();
