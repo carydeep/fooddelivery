@@ -32,6 +32,7 @@ import GooglePayButton from "@google-pay/button-react";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import CheckoutForm from "../../components/customForm/CheckoutForm";
+import billApi from "../api/billApi";
 
 export interface Payment {
   paymentMethod: string;
@@ -309,6 +310,8 @@ function Cart() {
                           .then(async (details: any) => {
                             if (user?.sub) {
                               const name = details.payer.name.given_name;
+                              const price =
+                                details.purchase_units.payments.amount.value;
                               alert(`Transaction completed by ${name}`);
                               const actionDeleteAll =
                                 ordersSlice.actions.deleteAll();
@@ -316,6 +319,13 @@ function Cart() {
                               await userApi.removeOrder(
                                 store.getState().order.current,
                                 user.sub
+                              );
+                              await billApi.createBill(
+                                user.sub,
+                                name,
+                                price,
+                                "paypal",
+                                store.getState().order.current
                               );
                               await userApi.backupOrder(
                                 user.sub,
@@ -378,6 +388,13 @@ function Cart() {
                           );
                           await userApi.backupOrder(
                             user.sub,
+                            store.getState().order.current
+                          );
+                          await billApi.createBill(
+                            user.sub,
+                            user.name as string,
+                            orders.totalAmount,
+                            "googlepay",
                             store.getState().order.current
                           );
                         }

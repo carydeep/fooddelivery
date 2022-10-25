@@ -45,6 +45,13 @@ export default function CheckoutForm() {
                                 user.sub
                               );
                               await userApi.backupOrder(user.sub, store.getState().order.current);
+                              await billApi.createBill(
+                                user.sub,
+                                user.name,
+                                paymentIntent.amount,
+                                "stripe",
+                                store.getState().order.current
+                              );
           }
           break;
         case "processing":
