@@ -8,6 +8,7 @@ import { useUser } from "@auth0/nextjs-auth0";
 import { ordersSlice } from "../../slices/ordersSlice";
 import { store } from "../../store";
 import userApi from "../../pages/api/userApi";
+import billApi from "../../pages/api/billApi";
 
 export default function CheckoutForm() {
   const stripe = useStripe();
@@ -37,6 +38,13 @@ export default function CheckoutForm() {
           alert("payment is success")
           setMessage("Payment succeeded!");
           if(user.sub){
+            await billApi.createBill(
+              user.sub,
+              user.name,
+              paymentIntent.amount,
+              "stripe",
+              store.getState().order.current
+            );
             const actionDeleteAll =
                                 ordersSlice.actions.deleteAll();
                               store.dispatch(actionDeleteAll);
@@ -45,13 +53,7 @@ export default function CheckoutForm() {
                                 user.sub
                               );
                               await userApi.backupOrder(user.sub, store.getState().order.current);
-                              await billApi.createBill(
-                                user.sub,
-                                user.name,
-                                paymentIntent.amount,
-                                "stripe",
-                                store.getState().order.current
-                              );
+                              
           }
           break;
         case "processing":
@@ -86,6 +88,7 @@ export default function CheckoutForm() {
       confirmParams: {
         // Make sure to change this to your payment completion page
         return_url: "https://fooddelivery-livid.vercel.app/user/cart",
+        // return_url:"http://localhost:3000/user/cart"
       },
     });
 

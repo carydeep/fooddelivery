@@ -120,8 +120,8 @@ function Cart() {
       const actionAddOrder = ordersSlice.actions.add(foodInfo);
       store.dispatch(actionAddOrder);
       try {
-        await userApi.backupOrder(user.sub, store.getState().order.current);
         await userApi.addOrder(store.getState().order.current, user.sub);
+        await userApi.backupOrder(user.sub, store.getState().order.current);
       } catch (error) {
         console.log("error:" + error);
       }
@@ -313,19 +313,19 @@ function Cart() {
                               const price =
                                 details.purchase_units[0].amount.value;
                               alert(`Transaction completed by ${name}`);
-                              const actionDeleteAll =
-                                ordersSlice.actions.deleteAll();
-                              store.dispatch(actionDeleteAll);
-                              await userApi.removeOrder(
-                                store.getState().order.current,
-                                user.sub
-                              );
                               await billApi.createBill(
                                 user.sub,
                                 name,
                                 price,
                                 "paypal",
                                 store.getState().order.current
+                              );
+                              const actionDeleteAll =
+                                ordersSlice.actions.deleteAll();
+                              store.dispatch(actionDeleteAll);
+                              await userApi.removeOrder(
+                                store.getState().order.current,
+                                user.sub
                               );
                               await userApi.backupOrder(
                                 user.sub,
@@ -379,6 +379,13 @@ function Cart() {
                         console.log("load payment data", paymentRequest);
                         if (user?.sub) {
                           alert(`Transaction completed`);
+                          await billApi.createBill(
+                            user.sub,
+                            user.name as string,
+                            orders.totalAmount,
+                            "googlepay",
+                            store.getState().order.current
+                          );
                           const actionDeleteAll =
                             ordersSlice.actions.deleteAll();
                           store.dispatch(actionDeleteAll);
@@ -388,13 +395,6 @@ function Cart() {
                           );
                           await userApi.backupOrder(
                             user.sub,
-                            store.getState().order.current
-                          );
-                          await billApi.createBill(
-                            user.sub,
-                            user.name as string,
-                            orders.totalAmount,
-                            "googlepay",
                             store.getState().order.current
                           );
                         }
