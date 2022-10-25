@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
 import { useAppSelector } from "../hooks";
 import { Categories, Food } from "../models";
+import billApi from "../pages/api/billApi";
 import userApi from "../pages/api/userApi";
 import { ordersSlice } from "../slices/ordersSlice";
 import { store } from "../store";
@@ -44,7 +45,7 @@ function ListFood(props: Props) {
       store.dispatch(actionAddOrder);
       try {
         await userApi.addOrder(store.getState().order.current, user.sub);
-        await userApi.backupOrder(user.sub, store.getState().order.current);
+        await billApi.backupOrder(user.sub, store.getState().order.current);
       } catch (error) {
         console.log("error:" + error);
       }

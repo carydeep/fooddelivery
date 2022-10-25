@@ -7,6 +7,7 @@ import { MdClose } from "react-icons/md";
 import { useAppSelector } from "../../hooks";
 import { OrderUser } from "../../models";
 import axiosUser from "../../pages/api/axiosUser";
+import billApi from "../../pages/api/billApi";
 import userApi from "../../pages/api/userApi";
 import { ordersSlice } from "../../slices/ordersSlice";
 import { store } from "../../store";
@@ -46,7 +47,7 @@ function PopUpShoppingCart(props: Props) {
       store.dispatch(actionRemoveOrder);
       try {
         await userApi.removeOrder(store.getState().order.current, user.sub);
-        await userApi.backupOrder(user.sub, store.getState().order.current);
+        await billApi.backupOrder(user.sub, store.getState().order.current);
       } catch (error) {
         console.log(error);
       }

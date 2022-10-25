@@ -41,7 +41,7 @@ export default function CheckoutForm() {
             await billApi.createBill(
               user.sub,
               user.name,
-              paymentIntent.amount,
+              paymentIntent.amount/100,
               "stripe",
               store.getState().order.current
             );

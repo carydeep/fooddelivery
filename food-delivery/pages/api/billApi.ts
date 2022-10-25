@@ -7,6 +7,21 @@ const billApi = {
             userID,name,price,methodPayment,order
         }
         return axiosBackup.post(url,body)
+    },
+    getBillByUser:(userID:string)=>{
+        const url = `/api/bill/get`
+        const body = {
+            iduser:userID
+        }
+        return axiosBackup.post(url,body)
+    },
+    backupOrder:(userID:string,order:any)=>{
+        const url = `/api/order/post`
+        const body={
+            userID,
+            order
+        }
+        return axiosBackup.post(url,body)
     }
 }
 

@@ -72,14 +72,6 @@ const userApi = {
             }
         }
         return axiosUser.patch(url, body)
-    },
-    backupOrder:(userID:string,order:any)=>{
-        const url = `/api/order/post`
-        const body={
-            userID,
-            order
-        }
-        return axiosBackup.post(url,body)
     }
 }
 

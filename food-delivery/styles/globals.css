@@ -29,6 +29,18 @@ button {
   cursor: pointer;
 }
 
+th{
+  padding: 20px;
+}
+
+table th{
+  border: 1px solid white;
+}
+
+tr:hover{
+  background-color: #414046;
+}
+
 :root {
   --green-light: #14c458;
   --color-card: #22222a;
