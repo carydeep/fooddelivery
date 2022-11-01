@@ -10,6 +10,10 @@ const foodApi = {
         const url = '/food';
         return axiosClient.get(url);
     },
+    createFood:(data:any)=>{
+        const url = '/food';
+        return axiosClient.post(url,data)
+    },
     getFoodByCategory: (category: number): Promise<Array<Food>> => {
         const url = `/food?category=${category}`;
         return axiosClient.get(url);
