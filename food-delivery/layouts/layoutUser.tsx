@@ -121,7 +121,7 @@ function LayoutUser({ children }: { children: ReactNode }) {
               router.asPath === "/user/history" && styles.active
             }`}
           >
-            <Link href={`/user/catalog`}>
+            <Link href={`/user/history`}>
               <a>
                 <BiCategory className={styles.function__option__item__icon} />
                 History
